@@ -14,14 +14,16 @@ framework:
 service:
 	$(MAKE) -C JasonService
 
+
+runservice:
+	$(MAKE) -C JasonService run
+
 runclient:
 	$(MAKE) -C JasonClient run
 
 runclientsandbox:
 	$(MAKE) -C JasonClient runsandbox
 
-runservice:
-	$(MAKE) -C JasonService run
 
 runservicesandbox:
 	$(MAKE) -C JasonService runsandbox
