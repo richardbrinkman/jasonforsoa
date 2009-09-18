@@ -1,0 +1,25 @@
+grant {
+	permission java.io.FilePermission "..${/}JasonService${/}build${/}classes${/}Service${/}ServiceService.wsdl","read";
+	permission java.io.FilePermission "basename","read";
+	permission java.io.FilePermission "xcatalog","read";
+	permission java.io.FilePermission "keys/keystore.jks","read";
+	permission java.io.FilePermission "${java.home}${/}lib${/}security${/}cacerts","read";
+	permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.ws";
+	permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.ws.api.message";
+	permission java.lang.RuntimePermission "accessClassInPackage.com.sun.xml.internal.ws.developer";
+	permission java.lang.RuntimePermission "accessDeclaredMembers";
+	permission java.lang.RuntimePermission "setContextClassLoader";
+	permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+	permission java.net.SocketPermission "localhost:8080","connect,resolve";
+	permission java.util.PropertyPermission "com.sun.xml.internal.ws.api.pipe.Fiber.serialize","read";
+	permission java.util.PropertyPermission "com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.noPool","read";
+	permission java.util.PropertyPermission "com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory.noPool","read";
+	permission java.util.PropertyPermission "java.home","read";
+	permission java.util.PropertyPermission "org.apache.xml.security.resource.config","read";
+	permission java.util.PropertyPermission "user.dir","read";
+	permission java.util.PropertyPermission "xml.catalog.className","read";
+	permission java.util.PropertyPermission "xml.catalog.files","read";
+	permission java.util.PropertyPermission "xml.catalog.ignoreMissing","read";
+	permission java.util.PropertyPermission "xml.catalog.prefer","read";
+	permission java.util.PropertyPermission "xml.catalog.staticCatalog","read";
+};

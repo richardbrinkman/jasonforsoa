@@ -1,0 +1,4 @@
+IfElseStmtsMustUseBraces
+IfStmtsMustUseBraces
+MethodArgumentCouldBeFinal
+LocalVariableCouldBeFinal

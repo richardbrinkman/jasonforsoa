@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope">
+	<soap:Body>
+		<transfer xmlns="http://cs.ru.nl/~brinkman/ns/example">
+			<fromAccount>6808755</fromAccount>
+			<toAccount>284537759</toAccount>
+			<amount>20.05</amount>
+		</transfer>
+	</soap:Body>
+</soap:Envelope>

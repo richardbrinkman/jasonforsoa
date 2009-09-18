@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://test/" xmlns:tns="http://test/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="transfer" type="tns:transfer"/>
+
+  <xs:element name="transferResponse" type="tns:transferResponse"/>
+
+  <xs:complexType name="transfer">
+    <xs:sequence>
+      <xs:element name="fromAccount" type="xs:string" minOccurs="0"/>
+      <xs:element name="toAccount" type="xs:string" minOccurs="0"/>
+      <xs:element name="amount" type="xs:float"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="transferResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

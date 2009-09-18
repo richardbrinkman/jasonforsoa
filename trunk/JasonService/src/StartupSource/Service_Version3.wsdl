@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+	name="Service_Version3.wsdl" 
+	targetNamespace="http://cs.ru.nl/jason/ns/Service_Version3"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:tns="http://cs.ru.nl/jason/ns/Service_Version3" 
+	xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <types>
+		<xsd:schema>
+			<xsd:element name="sayHelloRequest">
+				<xsd:sequence>
+					<xsd:element name="name" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:element>
+			<xsd:element name="sayHelloReply">
+				<xsd:sequence>
+					<xsd:element name="result" type="xsd:string"/>
+				</xsd:sequence>
+			</xsd:element>
+		</xsd:schema>
+	</types>
+    <message name="sayHelloRequest">
+        <part name="parameters" type="tns:sayHelloRequest"/>
+    </message>
+    <message name="sayHelloReply">
+        <part name="parameters" type="tns:sayHelloReply"/>
+    </message>
+    <portType name="Service">
+        <operation name="sayHello">
+            <input name="input" message="tns:sayHelloRequest"/>
+            <output name="output" message="tns:sayHelloReply"/>
+        </operation>
+    </portType>
+    <binding name="ServiceBinding" type="tns:Service">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="sayHello">
+            <soap:operation/>
+            <input name="input1">
+                <soap:body use="literal" namespace="http://cs.ru.nl/jason/ns/Service_Version3.wsdl"/>
+            </input>
+            <output name="output1">
+                <soap:body use="literal" namespace="http://cs.ru.nl/jason/ns/Service_Version3.wsdl"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="Service">
+        <port name="ServicePort" binding="tns:ServiceBinding">
+            <soap:address location="http://localhost:18181/Service/ServicePort"/>
+        </port>
+    </service>
+    <plnk:partnerLinkType name="Service_Version3.wsdl1">
+        <!-- A partner link type is automatically generated when a new port type is added. Partner link types are used by BPEL processes. 
+In a BPEL process, a partner link represents the interaction between the BPEL process and a partner service. Each partner link is associated with a partner link type.
+A partner link type characterizes the conversational relationship between two services. The partner link type can have one or two roles.-->
+        <plnk:role name="ServiceRole" portType="tns:Service"/>
+    </plnk:partnerLinkType>
+</definitions>

@@ -1,0 +1,70 @@
+<project name="Jason" default="jar">
+	<property name="framework.dir" value="JasonFramework"/>
+	<property name="service.dir" value="JasonService"/>
+
+	<target name="init-framework">
+		<mkdir dir="${framework.dir}/build/classes"/>
+		<mkdir dir="${framework.dir}/dist"/>
+	</target>
+
+	<target name="build-framework" depends="init-framework">
+		<javac srcdir="${framework.dir}"
+		       destdir="${framework.dir}/build/classes"/>
+	</target>
+
+	<target name="jar-framework" depends="build-framework">
+		<jar destfile="${framework.dir}/dist/JasonFramework.jar"
+		     basedir="${framework.dir}/build/classes"/>
+	</target>
+
+	<target name="init-service">
+		<mkdir dir="${service.dir}/build/classes"/>
+		<mkdir dir="${service.dir}/dist"/>
+	</target>
+
+	<target name="build-service" depends="init-service,jar-framework">
+		<javac srcdir="${service.dir}/src" 
+		       destdir="${service.dir}/build/classes"
+					 classpath="${framework.dir}/dist/JasonFramework.jar"/>
+		<java classname="com.sun.tools.internal.ws.WsGen"
+		      classpath="${java.home}/../lib/tools.jar"
+					fork="true">
+			<arg line="-d ${service.dir}/build/classes -cp ${service.dir}/build/classes -wsdl jason.test.server.Service"/>
+		</java>
+		<replaceregexp match="REPLACE_WITH_ACTUAL_URL" replace="http://localhost:8080/Service/ServiceService" file="${service.dir}/build/classes/ServiceService.wsdl"/>
+	</target>
+
+	<target name="jar-service" depends="build-service">
+		<jar destfile="${service.dir}/dist/JasonService.jar"
+		     basedir="${service.dir}/build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="jason.test.server.Startup"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="run-service" depends="jar-service,jar-framework">
+		<java classname="jason.test.server.Startup"
+		      fork="true">
+			<classpath>
+				<pathelement location="${service.dir}/dist/JasonService.jar"/>
+				<pathelement location="${framework.dir}/dist/JasonFramework.jar"/>
+			</classpath>
+		</java>
+	</target>
+
+	<target name="build" depends="build-framework,build-service"/>
+	<target name="jar" depends="jar-framework,jar-service"/>
+
+	<target name="clean-framework">
+		<delete dir="${framework.dir}/build"/>
+		<delete dir="${framework.dir}/dist"/>
+	</target>
+
+	<target name="clean-service">
+		<delete dir="${service.dir}/build"/>
+		<delete dir="${service.dir}/dist"/>
+	</target>
+
+	<target name="clean" depends="clean-framework,clean-service"/>
+</project>

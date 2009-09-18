@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions targetNamespace="http://test/" name="PaymentService" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://test/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://test/" schemaLocation="PaymentService_schema1.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="transfer">
+    <part name="parameters" element="tns:transfer"/>
+  </message>
+  <message name="transferResponse">
+    <part name="parameters" element="tns:transferResponse"/>
+  </message>
+  <portType name="Payment">
+    <operation name="transfer">
+      <input message="tns:transfer"/>
+      <output message="tns:transferResponse"/>
+    </operation>
+  </portType>
+  <binding name="PaymentPortBinding" type="tns:Payment">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="transfer">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="PaymentService">
+    <port name="PaymentPort" binding="tns:PaymentPortBinding">
+      <soap:address location="REPLACE_WITH_ACTUAL_URL"/>
+    </port>
+  </service>
+</definitions>
+
