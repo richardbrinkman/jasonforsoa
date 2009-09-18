@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://cs.ru.nl/jason/ns/policy"
+            xmlns:jason="http://cs.ru.nl/jason/ns/policy"
+            elementFormDefault="qualified">
+
+    <xsd:annotation>
+        <xsd:documentation>
+            This XML schema describes the policy files that are either typed in 
+            by hand or generated from the source code by the Jason compiler 
+            using the Jason annotations. Separating the 
+            policy from the code makes it possible to switch policies without 
+            changing the code. Also multiple policies can be in used 
+            simultaneously for the same object. This may be useful to temporaly
+            allow multiple versions of the object.
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="service">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="method">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Only methods that are annotated with the @WebMethod
+                            annotation in the source code, have to be specified
+                            in the policy file. Each parameter of the method
+                            should be specified in the same order as the source
+                            code.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="param" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                    <xsd:all>
+                                        <xsd:element ref="jason:authentic" minOccurs="0"/>
+                                        <xsd:element ref="jason:confidential" minOccurs="0"/>
+                                    </xsd:all>
+                                    <xsd:attribute name="name" use="required" type="xsd:string"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="result" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:all>
+                                        <xsd:element ref="jason:authentic" minOccurs="0"/>
+                                        <xsd:element ref="jason:confidential" minOccurs="0"/>
+                                    </xsd:all>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:attribute name="name" use="required" type="xsd:string"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="name" use="required" type="xsd:string"/>
+            <xsd:attribute name="package" use="required" type="xsd:string"/>
+			<xsd:attribute name="version" use="required" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="authentic">
+        <xsd:complexType>
+            <xsd:attribute name="signedby" use="required" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="confidential">
+        <xsd:complexType>
+            <xsd:attribute name="encryptedby" use="required" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+</xsd:schema>

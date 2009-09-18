@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="0" failures="0" hostname="menhir" name="jason.test.server.CryptoTest" tests="4" time="3.06" timestamp="2009-09-17T10:02:42">
+  <properties>
+    <property name="default.javac.source" value="1.6" />
+    <property name="file.encoding.pkg" value="sun.io" />
+    <property name="jmx.jconsole.enabled" value="true" />
+    <property name="user.zoneinfo.dir" value="/usr/share/javazi" />
+    <property name="libs.toplink.maven-pom" value="" />
+    <property name="build.classes.dir.Startup" value="/home/brinkman/documents/jason/software/trunk/JasonService/build/classes/Startup" />
+    <property name="javac.source" value="1.6" />
+    <property name="java.home" value="/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre" />
+    <property name="test.src.dir" value="test" />
+    <property name="libs.jaxws21.src" value="" />
+    <property name="javadoc.version" value="false" />
+    <property name="libs.CopyLibs.classpath" value="/usr/share/netbeans/6.5/java2/ant/extra/org-netbeans-modules-java-j2seproject-copylibstask.jar" />
+    <property name="libs.javac-api.src" value="" />
+    <property name="java.endorsed.dirs" value="/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/endorsed" />
+    <property name="libs.MySQLDriver.classpath" value="/home/brinkman/.netbeans/6.5/modules/ext/mysql-connector-java-5.1.6-bin.jar" />
+    <property name="libs.jaxb.javadoc" value="" />
+    <property name="libs.junit.maven-pom" value="" />
+    <property name="libs.PostgreSQLDriver.src" value="" />
+    <property name="nbplatform.default.harness.dir" value="/usr/share/netbeans/6.5/harness" />
+    <property name="debug-args-line" value="-Xdebug" />
+    <property name="jmx.jconsole.plugins.path" value="" />
+    <property name="build.sysclasspath" value="ignore" />
+    <property name="have.sources" value="true" />
+    <property name="includes" value="**" />
+    <property name="source.encoding" value="UTF-8" />
+    <property name="libs.jaxws21.classpath" value="/home/brinkman/.netbeans/6.5/modules/ext/jaxb/activation.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxb/api/jaxb-api.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxb/jaxb-impl.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxb/jaxb-xjc.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxb/api/jsr173_api.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/FastInfoset.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/http.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/api/jaxws-api.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/jaxws-rt.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/jaxws-tools.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/api/jsr181-api.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/api/jsr250-api.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/mimepull.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/resolver.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/api/saaj-api.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/saaj-impl.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/sjsxp.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/stax-ex.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/streambuffer.jar" />
+    <property name="libs.swing-app-framework.javadoc" value="" />
+    <property name="sun.os.patch.level" value="unknown" />
+    <property name="java.vendor.url" value="http://java.sun.com/" />
+    <property name="java.version" value="1.6.0_0" />
+    <property name="ant.file.-profiler-impl" value="/home/brinkman/documents/jason/software/trunk/JasonService/nbproject/profiler-build-impl.xml" />
+    <property name="javac.debug" value="true" />
+    <property name="run.classpath" value="../JasonFramework/dist/JasonFramework.jar:../JasonCompiler/dist/JasonCompiler.jar:/home/brinkman/documents/jason/software/trunk/JasonService/build/classes/Startup:../JasonFramework/lib/commons-logging-1.0.4.jar:../JasonFramework/lib/opensaml-1.0.1.jar:../JasonFramework/lib/wss4j-1.5.4.jar:../JasonFramework/lib/xmlsec-1.4.0.jar" />
+    <property name="libs.PostgreSQLDriver.maven-pom" value="" />
+    <property name="java.vendor.url.bug" value="http://java.sun.com/cgi-bin/bugreport.cgi" />
+    <property name="libs.absolutelayout.javadoc" value="" />
+    <property name="libs.junit_4.maven-pom" value="" />
+    <property name="manifest.file" value="manifest.mf" />
+    <property name="libs.swing-app-framework.maven-pom" value="" />
+    <property name="user.name" value="brinkman" />
+    <property name="jnlp.enabled" value="false" />
+    <property name="manifest.available+main.class+mkdist.available" value="true" />
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle" />
+    <property name="libs.jstl11.maven-pom" value="" />
+    <property name="sun.jnu.encoding" value="UTF-8" />
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment" />
+    <property name="application.vendor" value="dr. ir. R. Brinkman &lt;r.brinkman@cs.ru.nl&gt;" />
+    <property name="file.reference.xalan-j2-2.7.0.jar" value="/usr/share/java/xalan-j2-2.7.0.jar" />
+    <property name="jspc.classpath" value="/usr/share/netbeans/6.5/java2/ant/lib/ant.jar:/home/brinkman/.netbeans/6.5/modules/ext/servlet2.5-jsp2.1-api.jar:${j2ee.platform.classpath}:/home/brinkman/.netbeans/6.5/modules/ext/glassfish-jspparser-2.0.jar:/home/brinkman/.netbeans/6.5/modules/ext/glassfish-logging-2.0.jar:null:/usr/share/netbeans/6.5/java2/ant/lib/ant-launcher.jar" />
+    <property name="java.specification.name" value="Java Platform API Specification" />
+    <property name="javadoc.author" value="false" />
+    <property name="user.timezone" value="" />
+    <property name="manifest.available" value="true" />
+    <property name="libs.swing-layout.maven-pom" value="" />
+    <property name="libs.junit.javadoc" value="" />
+    <property name="path.separator" value=":" />
+    <property name="version-output" value="java version &quot;1.6" />
+    <property name="libs.absolutelayout.classpath" value="/usr/share/netbeans/6.5/java2/modules/ext/AbsoluteLayout.jar" />
+    <property name="libs.jaxb.maven-pom" value="" />
+    <property name="file.encoding" value="UTF-8" />
+    <property name="dist.javadoc.dir" value="dist/javadoc" />
+    <property name="libs.junit.src" value="" />
+    <property name="ant.file" value="/home/brinkman/documents/jason/software/trunk/JasonService/build.xml" />
+    <property name="libs.junit_4.src" value="" />
+    <property name="build.classes.dir.Service" value="/home/brinkman/documents/jason/software/trunk/JasonService/build/classes/Service" />
+    <property name="do.jar" value="true" />
+    <property name="java.io.tmpdir" value="/tmp" />
+    <property name="jmx.config.file" value="" />
+    <property name="build.test.results.dir" value="/home/brinkman/documents/jason/software/trunk/JasonService/build/test/results" />
+    <property name="user.language" value="en" />
+    <property name="line.separator" value="
+" />
+    <property name="libs.absolutelayout.src" value="" />
+    <property name="javac.compilerargs" value="-processor jason.compiler.JasonProcessor" />
+    <property name="config" value="Without_security_manager" />
+    <property name="jar.compress" value="false" />
+    <property name="debug-transport-by-os" value="dt_socket" />
+    <property name="libs.JWSAntTasks.src" value="" />
+    <property name="javac.compilerargs.jaxws" value="" />
+    <property name="java.vm.info" value="mixed mode" />
+    <property name="libs.javac-api.maven-pom" value="" />
+    <property name="jnlp.codebase.url" value="file:/home/brinkman/documents/jason/software/trunk/JasonService/dist/" />
+    <property name="javadoc.private" value="false" />
+    <property name="build.test.classes.dir" value="/home/brinkman/documents/jason/software/trunk/JasonService/build/test/classes" />
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="libs.jaxb.src" value="" />
+    <property name="jaxws.endorsed.dir" value="/home/brinkman/.netbeans/6.5/modules/ext/jaxws21/api:/home/brinkman/.netbeans/6.5/modules/ext/jaxb/api" />
+    <property name="libs.MySQLDriver.javadoc" value="" />
+    <property name="manifest.available+main.class" value="true" />
+    <property name="libs.beans-binding.javadoc" value="" />
+    <property name="platform.active" value="default_platform" />
+    <property name="libs.junit_4.javadoc" value="" />
+    <property name="libs.beans-binding.maven-pom" value="" />
+    <property name="javadoc.encoding" value="UTF-8" />
+    <property name="ant.file.JasonService-impl" value="/home/brinkman/documents/jason/software/trunk/JasonService/nbproject/build-impl.xml" />
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob" />
+    <property name="dist.jar" value="dist/JasonStartup.jar" />
+    <property name="meta.inf.dir" value="src/StartupSource/META-INF" />
+    <property name="jmx.jconsole.use.classpath" value="true" />
+    <property name="ant.version" value="Apache Ant version 1.7.1 compiled on February 23 2009" />
+    <property name="javadoc.nonavbar" value="false" />
+    <property name="user.properties.file" value="/home/brinkman/.netbeans/6.5/build.properties" />
+    <property name="libs.JWSAntTasks.classpath" value="/usr/share/netbeans/6.5/java2/ant/extra/org-netbeans-modules-javawebstart-anttasks.jar" />
+    <property name="libs.toplink.classpath" value="/home/brinkman/.netbeans/6.5/modules/ext/toplink/toplink-essentials.jar:/home/brinkman/.netbeans/6.5/modules/ext/toplink/toplink-essentials-agent.jar" />
+    <property name="libs.CopyLibs.maven-pom" value="" />
+    <property name="build.generated.dir" value="/home/brinkman/documents/jason/software/trunk/JasonService/build/generated" />
+    <property name="$label" value="Without security manager" />
+    <property name="os.name" value="Linux" />
+    <property name="java.specification.vendor" value="Sun Microsystems Inc." />
+    <property name="run.test.classpath" value="../JasonFramework/dist/JasonFramework.jar:../JasonCompiler/dist/JasonCompiler.jar:/home/brinkman/documents/jason/software/trunk/JasonService/build/classes/Startup:/usr/share/netbeans/6.5/java2/modules/ext/junit-4.5.jar:../JasonFramework/lib/wss4j-1.5.4.jar:../JasonFramework/lib/commons-logging-1.0.4.jar:../JasonFramework/lib/xmlsec-1.4.0.jar:../JasonFramework/lib/opensaml-1.0.1.jar:/usr/share/java/xalan-j2-2.7.0.jar:/home/brinkman/documents/jason/software/trunk/JasonService/build/test/classes" />
+    <property name="reference.JasonFramework.jar" value="../JasonFramework/dist/JasonFramework.jar" />
+    <property name="src.ServiceSource.dir" value="src/ServiceSource" />
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM" />
+    <property name="libs.CopyLibs.src" value="" />
+    <property name="libs.junit.classpath" value="/usr/share/netbeans/6.5/java2/modules/ext/junit-3.8.2.jar" />
+    <property name="libs.beans-binding.src" value="" />
+    <property name="jmx.rmi.port" value="1099" />
+    <property name="java.library.path" value="/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/amd64/server:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/amd64:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/../lib/amd64:/usr/java/packages/lib/amd64:/usr/lib64:/lib64:/lib:/usr/lib" />
+    <property name="project.JasonFramework" value="../JasonFramework" />
+    <property name="libs.PostgreSQLDriver.javadoc" value="" />
+    <property name="libs.toplink.javadoc" value="" />
+    <property name="jmx.rmi.enabled" value="false" />
+    <property name="ant.java.version" value="1.6" />
+    <property name="ant.file.JasonService" value="/home/brinkman/documents/jason/software/trunk/JasonService/build.xml" />
+    <property name="basedir" value="/home/brinkman/documents/jason/software/trunk/JasonService" />
+    <property name="javadoc.noindex" value="false" />
+    <property name="java.class.version" value="50.0" />
+    <property name="javac.test.classpath" value="../JasonFramework/dist/JasonFramework.jar:../JasonCompiler/dist/JasonCompiler.jar:/home/brinkman/documents/jason/software/trunk/JasonService/build/classes/Startup:/usr/share/netbeans/6.5/java2/modules/ext/junit-4.5.jar:../JasonFramework/lib/wss4j-1.5.4.jar:../JasonFramework/lib/commons-logging-1.0.4.jar:../JasonFramework/lib/xmlsec-1.4.0.jar:../JasonFramework/lib/opensaml-1.0.1.jar:/usr/share/java/xalan-j2-2.7.0.jar" />
+    <property name="ant.home" value="/usr/share/ant" />
+    <property name="javadoc.splitindex" value="true" />
+    <property name="jmx.jconsole.classpath.plugins" value="true" />
+    <property name="libs.toplink.src" value="" />
+    <property name="libs.javac-api.javadoc" value="" />
+    <property name="javadoc.preview" value="true" />
+    <property name="libs.MySQLDriver.maven-pom" value="" />
+    <property name="libs.CopyLibs.javadoc" value="" />
+    <property name="libs.PostgreSQLDriver.classpath" value="/home/brinkman/.netbeans/6.5/modules/ext/postgresql-8.3-603.jdbc3.jar" />
+    <property name="libs.junit_4.classpath" value="/usr/share/netbeans/6.5/java2/modules/ext/junit-4.5.jar" />
+    <property name="ant.file.JasonService-management-impl" value="/home/brinkman/documents/jason/software/trunk/JasonService/nbproject/management-build-impl.xml" />
+    <property name="libs.jaxws21.maven-pom" value="" />
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/amd64" />
+    <property name="build.dir" value="/home/brinkman/documents/jason/software/trunk/JasonService/build" />
+    <property name="application.title" value="JasonService" />
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Server Compiler" />
+    <property name="jmx.rmi.use.port" value="true" />
+    <property name="libs.swing-app-framework.classpath" value="/usr/share/netbeans/6.5/java2/modules/ext/appframework-1.0.3.jar" />
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment" />
+    <property name="javadoc.encoding.used" value="UTF-8" />
+    <property name="javadoc.windowtitle" value="" />
+    <property name="file.reference.opensaml-1.0.1.jar" value="../JasonFramework/lib/opensaml-1.0.1.jar" />
+    <property name="libs.jstl11.javadoc" value="" />
+    <property name="run.jvmargs" value="" />
+    <property name="libs.jstl11.src" value="" />
+    <property name="jmx.jconsole.period" value="4" />
+    <property name="ant.project.name" value="JasonService" />
+    <property name="libs.swing-layout.classpath" value="/usr/share/netbeans/6.5/platform9/modules/ext/swing-layout-1.0.3.jar" />
+    <property name="java.vm.specification.version" value="1.0" />
+    <property name="libs.jaxb.classpath" value="/home/brinkman/.netbeans/6.5/modules/ext/jaxb/activation.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxb/api/jaxb-api.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxb/jaxb-impl.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxb/jaxb-xjc.jar:/home/brinkman/.netbeans/6.5/modules/ext/jaxb/api/jsr173_api.jar" />
+    <property name="work.dir" value="/home/brinkman/documents/jason/software/trunk/JasonService/" />
+    <property name="dist.Startup.jar" value="dist/JasonStartup.jar" />
+    <property name="javadoc.use" value="true" />
+    <property name="sun.cpu.isalist" value="" />
+    <property name="dist.Service.jar" value="dist/JasonService.jar" />
+    <property name="java.ext.dirs" value="/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/ext:/usr/java/packages/lib/ext" />
+    <property name="os.version" value="2.6.30.5-43.fc11.x86_64" />
+    <property name="libs.jstl11.classpath" value="/home/brinkman/.netbeans/6.5/modules/ext/standard.jar:/home/brinkman/.netbeans/6.5/modules/ext/jstl.jar" />
+    <property name="excludes" value="" />
+    <property name="user.home" value="/home/brinkman" />
+    <property name="java.vm.vendor" value="Sun Microsystems Inc." />
+    <property name="libs.absolutelayout.maven-pom" value="" />
+    <property name="reference.JasonCompiler.jar" value="../JasonCompiler/dist/JasonCompiler.jar" />
+    <property name="file.reference.xmlsec-1.4.0.jar" value="../JasonFramework/lib/xmlsec-1.4.0.jar" />
+    <property name="user.dir" value="/home/brinkman/documents/jason/software/trunk/JasonService" />
+    <property name="debug-transport" value="dt_socket" />
+    <property name="application.args" value="" />
+    <property name="sun.cpu.endian" value="little" />
+    <property name="src.StartupSource.dir" value="src/StartupSource" />
+    <property name="jnlp.offline-allowed" value="false" />
+    <property name="java.vm.version" value="14.0-b16" />
+    <property name="libs.MySQLDriver.src" value="" />
+    <property name="java.class.path" value="/home/brinkman/documents/jason/software/trunk/JasonFramework/dist/JasonFramework.jar:/home/brinkman/documents/jason/software/trunk/JasonCompiler/dist/JasonCompiler.jar:/home/brinkman/documents/jason/software/trunk/JasonService/build/classes/Startup:/usr/share/netbeans/6.5/java2/modules/ext/junit-4.5.jar:/home/brinkman/documents/jason/software/trunk/JasonFramework/lib/wss4j-1.5.4.jar:/home/brinkman/documents/jason/software/trunk/JasonFramework/lib/commons-logging-1.0.4.jar:/home/brinkman/documents/jason/software/trunk/JasonFramework/lib/xmlsec-1.4.0.jar:/home/brinkman/documents/jason/software/trunk/JasonFramework/lib/opensaml-1.0.1.jar:/usr/share/java/xalan-j2-2.7.0.jar:/home/brinkman/documents/jason/software/trunk/JasonService/build/test/classes:/usr/share/java/junit4.jar:/usr/share/java/ant-launcher-1.7.1.jar:/usr/share/java/ant-1.7.1.jar:/usr/share/java/ant/ant-junit-1.7.1.jar" />
+    <property name="ant.library.dir" value="/usr/share/ant/lib" />
+    <property name="os.arch" value="amd64" />
+    <property name="javac.deprecation" value="false" />
+    <property name="nbplatform.default.netbeans.dest.dir" value="/usr/share/netbeans/6.5" />
+    <property name="build.classes.excludes" value="**/*.java,**/*.form" />
+    <property name="dist.dir" value="dist" />
+    <property name="debug.classpath" value="../JasonFramework/dist/JasonFramework.jar:../JasonCompiler/dist/JasonCompiler.jar:/home/brinkman/documents/jason/software/trunk/JasonService/build/classes/Startup:../JasonFramework/lib/commons-logging-1.0.4.jar:../JasonFramework/lib/opensaml-1.0.1.jar:../JasonFramework/lib/wss4j-1.5.4.jar:../JasonFramework/lib/xmlsec-1.4.0.jar" />
+    <property name="sun.java.launcher" value="SUN_STANDARD" />
+    <property name="jnlp.codebase.type" value="local" />
+    <property name="ant.core.lib" value="/usr/share/java/ant-1.7.1.jar" />
+    <property name="jnlp.signed" value="false" />
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc." />
+    <property name="do.depend" value="false" />
+    <property name="project.JasonCompiler" value="../JasonCompiler" />
+    <property name="file.separator" value="/" />
+    <property name="java.runtime.version" value="1.6.0_0-b16" />
+    <property name="sun.boot.class.path" value="/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/resources.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/rt.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/jsse.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/jce.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/charsets.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/lib/rhino.jar:/usr/lib/jvm/java-1.6.0-openjdk-1.6.0.0.x86_64/jre/classes" />
+    <property name="debug.test.classpath" value="../JasonFramework/dist/JasonFramework.jar:../JasonCompiler/dist/JasonCompiler.jar:/home/brinkman/documents/jason/software/trunk/JasonService/build/classes/Startup:/usr/share/netbeans/6.5/java2/modules/ext/junit-4.5.jar:../JasonFramework/lib/wss4j-1.5.4.jar:../JasonFramework/lib/commons-logging-1.0.4.jar:../JasonFramework/lib/xmlsec-1.4.0.jar:../JasonFramework/lib/opensaml-1.0.1.jar:/usr/share/java/xalan-j2-2.7.0.jar:/home/brinkman/documents/jason/software/trunk/JasonService/build/test/classes" />
+    <property name="jspctask.classpath" value="/home/brinkman/.netbeans/6.5/ant/extra/jspcompile.jar" />
+    <property name="libs.beans-binding.classpath" value="/usr/share/netbeans/6.5/java2/modules/ext/beansbinding-1.2.1.jar" />
+    <property name="main.class" value="jason.test.server.Startup" />
+    <property name="have.tests" value="true" />
+    <property name="libs.JWSAntTasks.maven-pom" value="" />
+    <property name="libs.javac-api.classpath" value="/usr/share/netbeans/6.5/java2/modules/ext/javac-api-nb-7.0-b07.jar" />
+    <property name="user.country" value="US" />
+    <property name="javadoc.notree" value="false" />
+    <property name="application.homepage" value="http://www.cs.ru.nl/jason/" />
+    <property name="file.reference.wss4j-1.5.4.jar" value="../JasonFramework/lib/wss4j-1.5.4.jar" />
+    <property name="libs.jaxws21.javadoc" value="/home/brinkman/.netbeans/6.5/docs/jaxws-2_1-api-doc.zip" />
+    <property name="default.javac.target" value="1.6" />
+    <property name="javac.classpath" value="../JasonFramework/dist/JasonFramework.jar:../JasonCompiler/dist/JasonCompiler.jar" />
+    <property name="javadoc.additionalparam" value="" />
+    <property name="build.classes.dir" value="/home/brinkman/documents/jason/software/trunk/JasonService/build/classes" />
+    <property name="libs.swing-layout.src" value="" />
+    <property name="libs.swing-layout.javadoc" value="" />
+    <property name="java.vendor" value="Sun Microsystems Inc." />
+    <property name="javac.target" value="1.6" />
+    <property name="file.reference.commons-logging-1.0.4.jar" value="../JasonFramework/lib/commons-logging-1.0.4.jar" />
+    <property name="libs.swing-app-framework.src" value="" />
+    <property name="java.specification.version" value="1.6" />
+    <property name="libs.JWSAntTasks.javadoc" value="" />
+    <property name="sun.arch.data.model" value="64" />
+  </properties>
+  <testcase classname="jason.test.server.CryptoTest" name="testInitializeCrypto" time="0.879" />
+  <testcase classname="jason.test.server.CryptoTest" name="testGetCertificates" time="0.041" />
+  <testcase classname="jason.test.server.CryptoTest" name="testFindElement" time="0.125" />
+  <testcase classname="jason.test.server.CryptoTest" name="testSignature" time="1.047" />
+  <system-out><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+<S:Header>
+<wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" S:mustUnderstand="1">
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="Signature-158981348">
+<ds:SignedInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#dsa-sha1" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"/>
+<ds:Reference URI="#id-45104096" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:Transforms xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"/>
+<ds:DigestValue xmlns:ds="http://www.w3.org/2000/09/xmldsig#">m4+9wb+kmEM6cWwCJTKwD6J8W68=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue xmlns:ds="http://www.w3.org/2000/09/xmldsig#">BlmZSYYw4/bPXdOimqOWqQeju9RhM14tNwaCaF4sAQCuKd4qs/PpZw==</ds:SignatureValue>
+<ds:KeyInfo Id="KeyId-1872474714" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<wsse:SecurityTokenReference xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="STRId-501583032" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+<ds:X509Data xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:X509IssuerSerial xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<ds:X509IssuerName xmlns:ds="http://www.w3.org/2000/09/xmldsig#">CN=JASON Example Service,OU=Digital Security,O=Radboud Universiteit,L=Nijmegen,ST=Gelderland,C=NL</ds:X509IssuerName>
+
+<ds:X509SerialNumber xmlns:ds="http://www.w3.org/2000/09/xmldsig#">1237472470</ds:X509SerialNumber>
+</ds:X509IssuerSerial>
+</ds:X509Data>
+</wsse:SecurityTokenReference>
+</ds:KeyInfo>
+</ds:Signature>
+</wsse:Security>
+</S:Header>  <S:Body>    <ns2:sayHello xmlns:ns2="http://cs.ru.nl/jason/ns" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="id-45104096">      <name>Richard</name>    </ns2:sayHello>  </S:Body>
+</S:Envelope>
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

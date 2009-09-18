@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="WSSecurityPolicy.wsdl" targetNamespace="http://www.cs.ru.nl/jason/test"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.cs.ru.nl/jason/test" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <types/>
+    <message name="WSSecurityPolicy.wsdlOperationRequest">
+        <part name="part1" type="xsd:string"/>
+    </message>
+    <message name="WSSecurityPolicy.wsdlOperationResponse">
+        <part name="part1" type="xsd:string"/>
+    </message>
+    <portType name="WSSecurityPolicy.wsdlPortType">
+        <operation name="WSSecurityPolicy.wsdlOperation">
+            <input name="input1" message="tns:WSSecurityPolicy.wsdlOperationRequest"/>
+            <output name="output1" message="tns:WSSecurityPolicy.wsdlOperationResponse"/>
+        </operation>
+    </portType>
+    <binding name="WSSecurityPolicy.wsdlBinding" type="tns:WSSecurityPolicy.wsdlPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="WSSecurityPolicy.wsdlOperation">
+            <soap:operation/>
+            <input name="input1">
+                <soap:body use="literal" namespace="http://www.cs.ru.nl/jason/test"/>
+            </input>
+            <output name="output1">
+                <soap:body use="literal" namespace="http://www.cs.ru.nl/jason/test"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="WSSecurityPolicy.wsdlService">
+        <port name="WSSecurityPolicy.wsdlPort" binding="tns:WSSecurityPolicy.wsdlBinding">
+            <soap:address location="http://localhost:${HttpDefaultPort}/WSSecurityPolicy.wsdlService/WSSecurityPolicy.wsdlPort"/>
+        </port>
+    </service>
+</definitions>
