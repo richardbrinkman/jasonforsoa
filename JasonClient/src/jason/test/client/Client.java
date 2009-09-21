@@ -10,7 +10,7 @@ public class Client {
 			"keys/keystore.jks", 
 			"storepass", 
 			"keypass",
-			"../JasonService/build/classes/Service/ServiceService.wsdl", 
+			"../JasonService/build/classes/Service/Service.wsdl", 
 			true
 		);
 		serviceService.setHandlerResolver(new JasonHandlerResolver(serviceEntry));

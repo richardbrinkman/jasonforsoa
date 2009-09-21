@@ -14,8 +14,7 @@ dist/JasonClient.jar: \
   build/classes/jason/test/client/SayHelloResponse.class
 	jar cfe dist/JasonClient.jar jason.test.client.Client -C build/classes jason
 
-build/classes/%.class: src/%.java
-	$(MAKE) -C ../JasonFramework dist/JasonFramework.jar
+build/classes/%.class: src/%.java ../JasonFramework/dist/JasonFramework.jar
 	javac -cp build/classes:$(LIBRARY.CLASSPATH) -d build/classes $<
 
 run: dist/JasonClient.jar ../JasonFramework/dist/JasonFramework.jar
@@ -31,18 +30,18 @@ keys:
 clean:
 	rm -rf build/classes/*
 
-../JasonFramework/dist/JasonFramework.jar: force
-	make -C ../JasonFramework dist/JasonFramework.jar
+../JasonFramework/%: force
+	make -C ../JasonFramework $*
 
 build/classes/jason/test/client/Service.class \
 build/classes/jason/test/client/ServiceService.class \
 build/classes/jason/test/client/SayHello.class \
 build/classes/jason/test/client/SayHelloResponse.class: \
-  ../JasonService/build/classes/Service/ServiceService.wsdl
-	wsimport -d build/classes -p jason.test.client ../JasonService/build/classes/Service/ServiceService.wsdl
+  ../JasonService/build/classes/Service/Service.wsdl
+	wsimport -d build/classes -p jason.test.client $<
 
-../JasonService/build/classes/Service/ServiceService.wsdl:
-	make -C ../JasonService build/classes/Service/ServiceService.wsdl
+../JasonService/%: force
+	make -C ../JasonService $*
 
 build/classes/jason.policy: src/jason.policy
 	cp $< build/classes

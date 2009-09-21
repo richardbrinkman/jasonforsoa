@@ -12,6 +12,7 @@ import jason.annotation.Policy;
 import jason.annotation.Roles;
 import jason.framework.Constants;
 import java.io.IOException;
+import java.lang.annotation.IncompleteAnnotationException;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
@@ -34,6 +35,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -50,7 +55,7 @@ import org.w3c.dom.Node;
 @SupportedAnnotationTypes({"jason.annotation.*"})
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class JasonProcessor extends AbstractProcessor {
-	public static final String NOT_YET_IMPLEMENTED = " not yet implemented";
+	private static final String NOT_YET_IMPLEMENTED = " not yet implemented";
 	private Messager messager;
 
 	@Override
@@ -95,9 +100,14 @@ public class JasonProcessor extends AbstractProcessor {
 					"xmlns:" + Constants.WS_SECURITY_POLICY_PREFIX,
 					Constants.WS_SECURITY_POLICY_NAMESPACE
 				);
-				Node policy = policyRoot.appendChild(
+				policyRoot.setAttribute(
+					"xmlns:" + Constants.WS_SECURITY_UTILITY_PREFIX,
+					Constants.WS_SECURITY_UTILITY_NAMESPACE
+				);
+				Node defaultPolicy = policyRoot.appendChild(
 					wsdlDocument.createElement(Constants.WS_POLICY_PREFIX + ":ExactlyOne")
 				).appendChild(wsdlDocument.createElement(Constants.WS_POLICY_PREFIX + ":All"));
+				org.w3c.dom.Element alternativePolicies = null;
 				String packageName = null; 
 				String serviceName = null; 
 				Elements elements = processingEnv.getElementUtils();
@@ -111,22 +121,104 @@ public class JasonProcessor extends AbstractProcessor {
 						messager.printMessage(Kind.NOTE, "  Element: " + element);
 						if (annotation.getQualifiedName().toString().equals(AccessibleTo.class.getCanonicalName()))
 							messager.printMessage(Kind.MANDATORY_WARNING, "@AccessibleTo" + NOT_YET_IMPLEMENTED);
+
+						//@Authentic
 						if (annotation.getQualifiedName().toString().equals(Authentic.class.getCanonicalName()))
-							addSecurityParts(policy, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements");
-						if (annotation.getQualifiedName().toString().equals(AvailablePolicies.class.getCanonicalName()))
-							messager.printMessage(Kind.MANDATORY_WARNING, "@AvailablePolicies" + NOT_YET_IMPLEMENTED);
+							addSecurityParts(defaultPolicy, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements");
+
+						//@AvailablePolicies
+						if (annotation.getQualifiedName().toString().equals(AvailablePolicies.class.getCanonicalName())) {
+							AvailablePolicies availablePolicies = element.getAnnotation(AvailablePolicies.class);
+							if (alternativePolicies == null && availablePolicies.value().length > 0) {
+								alternativePolicies = (org.w3c.dom.Element) defaultPolicy.appendChild(
+									wsdlDocument.createElement(
+										Constants.WS_POLICY_PREFIX + ":ExactlyOne"
+									)
+								);
+							}
+							for (String policyName : availablePolicies.value()) {
+								org.w3c.dom.Element policy = wsdlDocument.createElement(
+									Constants.WS_POLICY_PREFIX + ":Policy"
+								);
+								policy.setAttribute(Constants.WS_SECURITY_UTILITY_PREFIX + ":Id", policyName);
+								alternativePolicies.appendChild(
+									wsdlDocument.createElement(
+										Constants.WS_POLICY_PREFIX + ":All"
+									)
+								).appendChild(policy).appendChild(
+									wsdlDocument.createElement(
+										Constants.WS_POLICY_PREFIX + ":ExactlyOne"
+									)
+								).appendChild(
+									wsdlDocument.createElement(
+										Constants.WS_POLICY_PREFIX + ":All"
+									)
+								);
+							}
+						}
+
+						//@Confidential
 						if (annotation.getQualifiedName().toString().equals(Confidential.class.getCanonicalName()))
-							addSecurityParts(policy, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts");
+							addSecurityParts(defaultPolicy, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts");
+
+						//@Fresh
 						if (annotation.getQualifiedName().toString().equals(Fresh.class.getCanonicalName()))
 							messager.printMessage(Kind.MANDATORY_WARNING, "@Fresh" + NOT_YET_IMPLEMENTED);
+
+						//@Integrity
 						if (annotation.getQualifiedName().toString().equals(Integrity.class.getCanonicalName()))
 							messager.printMessage(Kind.MANDATORY_WARNING, "@Integrity" + NOT_YET_IMPLEMENTED);
+
+						//@Logged
 						if (annotation.getQualifiedName().toString().equals(Logged.class.getCanonicalName()))
 							messager.printMessage(Kind.MANDATORY_WARNING, "@Logged" + NOT_YET_IMPLEMENTED);
-						if (annotation.getQualifiedName().toString().equals(Policies.class.getCanonicalName()))
-							messager.printMessage(Kind.MANDATORY_WARNING, "@Policies" + NOT_YET_IMPLEMENTED);
+
+						//@Policies
+						if (annotation.getQualifiedName().toString().equals(Policies.class.getCanonicalName())) {
+							XPath xpath = XPathFactory.newInstance().newXPath();
+							Policies policies = element.getAnnotation(Policies.class);
+							for (Policy policy : policies.value()) {
+								Node policyElement = (Node) xpath.evaluate(
+									"All/Policy[@Id=\"" + policy.name() +"\"]/ExactlyOne/All",
+									alternativePolicies,
+									XPathConstants.NODE
+								);
+								if (policyElement == null)
+									messager.printMessage(Kind.ERROR, "Policyname " + policy.name() + " should be specified as one the @AvailablePolicies");
+								else {
+									try {
+										if (policy.accessibleTo() != null)
+											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(accessibleTo=...)" + NOT_YET_IMPLEMENTED);
+									} catch (IncompleteAnnotationException ex) {}
+									try {
+										Authentic authentic = policy.authentic();
+										addSecurityParts(policyElement, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements");
+									} catch (IncompleteAnnotationException ex) {}
+									try {
+										Confidential confidential = policy.confidential();
+										addSecurityParts(policyElement, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts");
+									} catch (IncompleteAnnotationException ex) {}
+									try {
+										if (policy.integrity() != null)
+											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(integrity=..)" + NOT_YET_IMPLEMENTED);
+									} catch (IncompleteAnnotationException ex) {}
+									try {
+										if (policy.logged() != null)
+											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(logged=...)" + NOT_YET_IMPLEMENTED);
+									} catch (IncompleteAnnotationException ex) {}
+									try {
+										if (policy.roles() != null)
+											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(roles=...)" + NOT_YET_IMPLEMENTED);
+									} catch (IncompleteAnnotationException ex) {}
+								}
+							}
+						}
+
+						//@Policy
 						if (annotation.getQualifiedName().toString().equals(Policy.class.getCanonicalName()))
-							messager.printMessage(Kind.MANDATORY_WARNING, "@Policy" + NOT_YET_IMPLEMENTED);
+							messager.printMessage(Kind.ERROR, "@Policy can only be used inside a @Policies annotation");
+
+						//@Roles
 						if (annotation.getQualifiedName().toString().equals(Roles.class.getCanonicalName()))
 							messager.printMessage(Kind.MANDATORY_WARNING, "@Roles" + NOT_YET_IMPLEMENTED);
 					}
@@ -155,6 +247,8 @@ public class JasonProcessor extends AbstractProcessor {
 		} catch (ParserConfigurationException ex) {
 			messager.printMessage(Kind.ERROR, ex.getLocalizedMessage());
 		} catch (IOException ex) {
+			messager.printMessage(Kind.ERROR, ex.getLocalizedMessage());
+		} catch (XPathExpressionException ex) {
 			messager.printMessage(Kind.ERROR, ex.getLocalizedMessage());
 		}
 		return processed;

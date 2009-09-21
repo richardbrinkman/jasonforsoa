@@ -15,6 +15,7 @@ public final class Constants {
 	public static final String XML_ENCRYPTION_NAMESPACE = "http://www.w3.org/2001/04/xmlenc#";
 	public static final String WS_POLICY_NAMESPACE = "http://www.w3.org/ns/ws-policy";
 	public static final String WS_SECURITY_POLICY_NAMESPACE = "http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702";
+	public static final String WS_SECURITY_UTILITY_NAMESPACE = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wsssecurity-utility-1.0.xsd";
 	public static final String WS_SECURECONVERSATION_NAMESPACE = "http://docs.oasis-open.org/ws-sx/ws-secureconverstation/200512";
 	public static final String WS_TRUST_NAMESPACE = "http://docs.oasis-open.org/ws-sx/ws-trust/200512";
 	public static final String WSDL_NAMESPACE = "http://schemas.xmlsoap.org/wsdl/";
@@ -23,6 +24,7 @@ public final class Constants {
 	public static final String XML_ENCRYPTION_PREFIX = "enc";
 	public static final String WS_POLICY_PREFIX = "wsp";
 	public static final String WS_SECURITY_POLICY_PREFIX = "sp";
+	public static final String WS_SECURITY_UTILITY_PREFIX = "wsu";
 	public static final String WS_SECURECONVERSATION_PREFIX = "wsc";
 	public static final String WS_TRUST_POLICY = "wst";
 	public static final String SIGNATURE_ELEMENT_NAME = "Signature";
