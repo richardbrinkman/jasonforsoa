@@ -22,7 +22,7 @@ public final class Startup {
 				"keys/keystore.jks", 
 				"storepass", 
 				"keypass", 
-				"src/ServiceSource/ServiceService.wsdl", 
+				"build/classes/Service/Service.wsdl",
 				"http://localhost:8080/Service/ServiceService", 
 				true);
 			administrativeService.add(serviceEntry);
