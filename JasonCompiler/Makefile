@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean force
 
 all: dist/JasonCompiler.jar
 
@@ -10,8 +10,8 @@ dist/JasonCompiler.jar: \
 build/classes/%.class: src/%.java ../JasonFramework/dist/JasonFramework.jar
 	javac -cp build/classes:../JasonFramework/dist/JasonFramework.jar -d build/classes $<
 
-../JasonFramework/dist/JasonFramework.jar:
-	make -C ../JasonFramework dist/JasonFramework.jar
+../JasonFramework/%: force
+	make -C ../JasonFramework $*
 
 clean:
 	rm -rf build/classes/* dist/*
