@@ -1,4 +1,4 @@
-.PHONY: all framework run runsandbox test keys clean
+.PHONY: all run runsandbox test keys clean force
 
 LIBRARY.CLASSPATH=../JasonFramework/dist/JasonFramework.jar:../JasonFramework/lib/commons-logging-1.0.4.jar:../JasonFramework/lib/opensaml-1.0.1.jar:../JasonFramework/lib/wss4j-1.5.4.jar:../JasonFramework/lib/xmlsec-1.4.0.jar:/usr/share/java/xalan-j2-2.7.0.jar
 
@@ -16,28 +16,26 @@ dist/JasonService.jar: \
   build/classes/Service/Service.wsdl
 	jar cf $@ -C build/classes/Service jason
 
-build/classes/Startup/%.class: src/StartupSource/%.java
-	$(MAKE) -C ../JasonFramework dist/JasonFramework.jar
+build/classes/Startup/%.class: src/StartupSource/%.java ../JasonFramework/dist/JasonFramework.jar
 	javac -cp build/classes/Startup:$(LIBRARY.CLASSPATH) -d build/classes/Startup -sourcepath src/StartupSource $<
 
-build/classes/Service/%.class: src/ServiceSource/%.java ../JasonCompiler/dist/JasonCompiler.jar
-	$(MAKE) -C ../JasonFramework dist/JasonFramework.jar
-	$(MAKE) -C ../JasonCompiler dist/JasonCompiler.jar
+build/classes/Service/%.class: src/ServiceSource/%.java ../JasonFramework/dist/JasonFramework.jar ../JasonCompiler/dist/JasonCompiler.jar
 	javac -cp build/classes/Service:$(LIBRARY.CLASSPATH):../JasonCompiler/dist/JasonCompiler.jar -processor jason.compiler.JasonProcessor -d build/classes/Service -sourcepath src/ServiceSource $<
 
-run: dist/JasonStartup.jar dist/JasonService.jar framework
+run: dist/JasonStartup.jar dist/JasonService.jar ../JasonFramework/dist/JasonFramework.jar
 	java -cp dist/JasonStartup.jar:$(LIBRARY.CLASSPATH) jason.test.server.Startup
 
-runsandbox: dist/JasonStartup.jar dist/JasonService.jar framework build/classes/Startup/jason.policy
+runsandbox: dist/JasonStartup.jar dist/JasonService.jar ../JasonFramework/dist/JasonFramework.jar build/classes/Startup/jason.policy
 	java -cp dist/JasonStartup.jar:$(LIBRARY.CLASSPATH) -Djava.security.manager -Djava.security.policy=build/classes/Startup/jason.policy jason.test.server.Startup
 
 test: \
   build/test/classes/jason/test/server/KeyStoreTest.class \
   build/test/classes/jason/test/server/CryptoTest.class \
-  build/test/classes/jason/test/server/WsdlParseTest.class
+  build/test/classes/jason/test/server/WsdlParseTest.class \
+  ../JasonFramework/dist/JasonFramework.jar
 	java -cp /usr/share/java/junit4.jar:build/test/classes:$(LIBRARY.CLASSPATH) org.junit.runner.JUnitCore jason.test.server.KeyStoreTest jason.test.server.CryptoTest jason.test.server.WsdlParseTest
 
-build/test/classes/%.class: test/%.java
+build/test/classes/%.class: test/%.java ../JasonFramework/dist/JasonFramework.jar
 	javac -d build/test/classes -cp /usr/share/java/junit4.jar:$(LIBRARY.CLASSPATH) $<
 
 keys:
@@ -45,12 +43,6 @@ keys:
 
 clean:
 	rm -rf build/classes/Service/* build/classes/Startup/* build/test/classes/* dist/*.jar
-
-framework:
-	make -C ../JasonFramework dist/JasonFramework.jar
-
-../JasonCompiler/dist/JasonCompiler.jar:
-	make -C ../JasonCompiler dist/JasonCompiler.jar
 
 build/classes/Service/ServiceService.wsdl \
 build/classes/Service/jason/test/server/jaxws/SayHello.class \
@@ -61,9 +53,17 @@ build/classes/Service/jason/test/server/jaxws/SayHelloResponse.class: \
 
 build/classes/Service/Service.wsdl: \
   build/classes/Service/ServiceService.wsdl \
-  build/classes/Service/jason/test/server/Service.wsdl
+  build/classes/Service/jason/test/server/Service.wsp
 	$(MAKE) -C ../JasonCompiler dist/JasonCompiler.jar
 	java -cp ../JasonCompiler/dist/JasonCompiler.jar jason.compiler.Merge $+ $@
 
 build/classes/Startup/jason.policy: src/StartupSource/jason.policy
 	cp $< build/classes/Startup
+
+force: ;
+
+../JasonCompiler/%: force
+	make -C ../JasonCompiler $*
+
+../JasonFramework/%: force
+	make -C ../JasonFramework $*

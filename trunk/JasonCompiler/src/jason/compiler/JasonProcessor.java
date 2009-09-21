@@ -143,7 +143,7 @@ public class JasonProcessor extends AbstractProcessor {
 						processingEnv.getFiler().createResource(
 							StandardLocation.SOURCE_OUTPUT,
 							packageName, 
-							serviceName + ".wsdl"
+							serviceName + ".wsp"
 						).openWriter()
 					)
 				);
