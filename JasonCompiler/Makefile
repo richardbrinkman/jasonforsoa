@@ -11,7 +11,7 @@ build/classes/%.class: src/%.java ../JasonFramework/dist/JasonFramework.jar
 	javac -cp build/classes:../JasonFramework/dist/JasonFramework.jar -d build/classes $<
 
 ../JasonFramework/%: force
-	make -C ../JasonFramework $*
+	@make --no-print-directory -C ../JasonFramework $*
 
 clean:
 	rm -rf build/classes/* dist/*

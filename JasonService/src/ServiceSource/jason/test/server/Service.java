@@ -3,15 +3,18 @@ package jason.test.server;
 import jason.annotation.Authentic;
 import jason.annotation.AvailablePolicies;
 import jason.annotation.Confidential;
+import jason.annotation.Fresh;
 import jason.annotation.Policies;
 import jason.annotation.Policy;
 import jason.annotation.Roles;
+import jason.annotation.ServiceRoles;
 import javax.jws.WebParam;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
 @AvailablePolicies({"OldVersion", "NewVersion"})
-@Roles({"service", "caller"})
+@Roles("caller")
+@ServiceRoles("service")
 @WebService(targetNamespace = "http://cs.ru.nl/jason/ns")
 public class Service {
 	/** 
@@ -23,6 +26,7 @@ public class Service {
 	 */
 	@WebMethod
 	@Authentic(signedBy="service") //for all policies
+	@Fresh
 	public String sayHello(
 		@WebParam(name="name")
 		@Policies({

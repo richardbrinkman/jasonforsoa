@@ -12,12 +12,12 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Target({ElementType.PARAMETER,
-         ElementType.TYPE})
+         ElementType.METHOD})
 @Retention(RetentionPolicy.SOURCE)
 public @interface Fresh {
 	/**
 	 * URL that should be included besides the timestamp
 	 */
-	String url();
+	String url() default "";
 	Check[] check() default Check.TIMESTAMP;
 }
