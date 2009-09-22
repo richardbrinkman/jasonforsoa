@@ -13,7 +13,7 @@
 === How to get started ===
 
 First download the source code by performing an `svn checkout` (see the [http://code.google.com/p/jasonforsoa/source/checkout Source tab]). The downloaded source code contains 5 projects:
-  # JasonCompiler - Contains an annotation processor to read the Jason annotations and transforms them to a WS-securitypolicy format
+  # JasonCompiler - Contains an annotation processor to read the Jason annotations and transforms them to a [http://docs.oasis-open.org/ws-sx/ws-securitypolicy/v1.2/ws-securitypolicy.html WS-securitypolicy] format
   # JasonFramework - Contains the Jason annotations and the runtime framework (mainly consisting of the JasonHandler)
   # JasonService - Contains a simple test service
   # JasonClient - Contains a simple test client
