@@ -1,6 +1,10 @@
-#summary Wiki home
+﻿#summary Wiki home
 #labels Featured
 
 = Jason for Service Oriented Architectures =
 
 Currently the Jason for SOA project is being transferred to Google code. The Java source can already be downloaded by svn. The website is still at the old place; at the [http://www.cs.ru.nl/jason/ Radboud University].
+
+A nice introduction about what Jason is and how it simplifies the task of securing web services can be found in the [http://jasonforsoa.googlecode.com/files/securing-soa-with-jason.pdf paper] presented at the Middleware Security workshop '08 in Leuven.
+
+If you have trouble with the software, please consult the [faq Frequently Asked Questions] page before contacting the developers.

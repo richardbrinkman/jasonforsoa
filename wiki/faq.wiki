@@ -1,0 +1,33 @@
+﻿#summary Frequently Asked Questions
+
+= Frequently Asked Questions =
+
+== Questions ==
+
+# [#How_to_get_started]
+# [#Something_does_not_work]
+# [#How_can_I_help]
+
+== Answers ==
+
+=== How to get started ===
+
+First download the source code by performing an `svn checkout` (see the [http://code.google.com/p/jasonforsoa/source/checkout Source tab]). The downloaded source code contains 5 projects:
+# JasonCompiler - Contains an annotation processor to read the Jason annotations and transforms them to a WS-securitypolicy format
+# JasonFramework - Contains the Jason annotations and the runtime framework (mainly consisting of the JasonHandler)
+# JasonService - Contains a simple test service
+# JasonClient - Contains a simple test client
+# JasonExample - Dummy project, mainly used for testing new things out
+Each project is a Netbeans project. However, not all the builds can be done from within Netbeans. Currently, Netbeans cannot use annoation processors. Therefore, also `Makefile`s exist that should be self explanatory. The simplest way to get things working is by running the example service and the example client (in different terminal windows) by:
+* `make runservice`
+* `make runclient`
+
+=== Something does not work ===
+
+Be aware that the current status of the Jason project is far from mature. Only some features have already been implemented yet. If you found some errors or missing features, feel free to issue a bug report on the [http://code.google.com/p/jasonforsoa/issues/list Issues tab].
+
+=== How can I help ===
+
+You can help by:
+* Becoming a project member (contact the owner)
+* Issuing a [http://code.google.com/p/jasonforsoa/issues/list bug report]
