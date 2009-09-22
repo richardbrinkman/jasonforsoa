@@ -3,6 +3,7 @@ package jason.compiler;
 import jason.annotation.AccessibleTo;
 import jason.annotation.Authentic;
 import jason.annotation.AvailablePolicies;
+import jason.annotation.Check;
 import jason.annotation.Confidential;
 import jason.annotation.Fresh;
 import jason.annotation.Integrity;
@@ -10,9 +11,11 @@ import jason.annotation.Logged;
 import jason.annotation.Policies;
 import jason.annotation.Policy;
 import jason.annotation.Roles;
+import jason.annotation.ServiceRoles;
 import jason.framework.Constants;
 import java.io.IOException;
 import java.lang.annotation.IncompleteAnnotationException;
+import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
@@ -64,32 +67,11 @@ public class JasonProcessor extends AbstractProcessor {
 		messager = processingEnvironment.getMessager();
 	}
 
-//	protected String processElement(Element element, String policyVersion) {
-//		boolean isAnnotated = false;
-//		StringBuilder parameterOutput = new StringBuilder();
-//		Authentic authentic = element.getAnnotation(Authentic.class);
-//		Confidential confidential = element.getAnnotation(Confidential.class);
-//		Integrity integrity = element.getAnnotation(Integrity.class);
-//		//@TODO: handle multiple policies correctly
-//		if (authentic != null) {
-//			isAnnotated = true;
-//			parameterOutput.append("\t\t\t<authentic signedby=\"" + authentic.signedBy() + "\"/>\n");
-//		}
-//		if (confidential != null) {
-//			isAnnotated = true;
-//			parameterOutput.append("\t\t\t<confidential encryptedby=\"" + confidential.encryptedFor() + "\"/>\n");
-//		}
-//		if (integrity != null) {
-//			messager.printMessage(Kind.WARNING, "De @Integrity annotation is nog niet ingebouwd");
-//		}
-//		return isAnnotated ? parameterOutput.toString() : null;
-//	}
-
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 		boolean processed = false;
 		try {
-			messager.printMessage(Kind.NOTE, "---Start processing---");
+//			messager.printMessage(Kind.NOTE, "---Start processing---");
 			if (!annotations.isEmpty()) {
 				Document wsdlDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
 				org.w3c.dom.Element policyRoot = wsdlDocument.createElementNS(
@@ -109,22 +91,33 @@ public class JasonProcessor extends AbstractProcessor {
 				).appendChild(wsdlDocument.createElement(Constants.WS_POLICY_PREFIX + ":All"));
 				org.w3c.dom.Element alternativePolicies = null;
 				String packageName = null; 
-				String serviceName = null; 
+				String serviceName = null;
+				Set<String> roleNames = new HashSet<String>();
+				Set<String> serviceRoleNames = new HashSet<String>();
 				Elements elements = processingEnv.getElementUtils();
 				for (TypeElement annotation : annotations) {
-					messager.printMessage(Kind.NOTE, "Processing annotation " + annotation.getQualifiedName());
+//					messager.printMessage(Kind.NOTE, "Processing annotation " + annotation.getQualifiedName());
 					for (Element element : roundEnv.getElementsAnnotatedWith(annotation)) {
 						if (packageName == null) 
 							packageName = elements.getPackageOf(element).getQualifiedName().toString();
 						if (serviceName == null)
 							serviceName = extractServiceName(element);
-						messager.printMessage(Kind.NOTE, "  Element: " + element);
+//						messager.printMessage(Kind.NOTE, "  Element: " + element);
+
+						//@AccessibleTo
 						if (annotation.getQualifiedName().toString().equals(AccessibleTo.class.getCanonicalName()))
-							messager.printMessage(Kind.MANDATORY_WARNING, "@AccessibleTo" + NOT_YET_IMPLEMENTED);
+							messager.printMessage(Kind.MANDATORY_WARNING, "@AccessibleTo" + NOT_YET_IMPLEMENTED, element);
 
 						//@Authentic
-						if (annotation.getQualifiedName().toString().equals(Authentic.class.getCanonicalName()))
+						if (annotation.getQualifiedName().toString().equals(Authentic.class.getCanonicalName())) {
+							String signedBy = element.getAnnotation(Authentic.class).signedBy();
+							if (!signedBy.equals("")) {
+								messager.printMessage(Kind.MANDATORY_WARNING, "signedBy attribute for @Authentic" + NOT_YET_IMPLEMENTED, element);
+								if (!serviceRoleNames.contains(signedBy))
+									messager.printMessage(Kind.ERROR, "signedBy attribute value must be one that is specified in @ServiceRoles", element);
+							}
 							addSecurityParts(defaultPolicy, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements");
+						}
 
 						//@AvailablePolicies
 						if (annotation.getQualifiedName().toString().equals(AvailablePolicies.class.getCanonicalName())) {
@@ -158,20 +151,41 @@ public class JasonProcessor extends AbstractProcessor {
 						}
 
 						//@Confidential
-						if (annotation.getQualifiedName().toString().equals(Confidential.class.getCanonicalName()))
+						if (annotation.getQualifiedName().toString().equals(Confidential.class.getCanonicalName())) {
+							String encryptedFor = element.getAnnotation(Confidential.class).encryptedFor();
+							if (!encryptedFor.equals("")) {
+								messager.printMessage(Kind.MANDATORY_WARNING, "encryptedFor attribute for @Confidential" + NOT_YET_IMPLEMENTED, element);
+								if (!roleNames.contains(encryptedFor))
+									messager.printMessage(Kind.ERROR, "encryptedFor attribute value bust be one that is specified in @Roles", element);
+							}
 							addSecurityParts(defaultPolicy, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts");
+						}
 
 						//@Fresh
 						if (annotation.getQualifiedName().toString().equals(Fresh.class.getCanonicalName()))
-							messager.printMessage(Kind.MANDATORY_WARNING, "@Fresh" + NOT_YET_IMPLEMENTED);
+							for (Check check : element.getAnnotation(Fresh.class).check())
+								switch (check) {
+									case SEQUENCE_NUMBER:
+										messager.printMessage(Kind.MANDATORY_WARNING, "@Fresh(SEQUENCE_NUMBER)" + NOT_YET_IMPLEMENTED, element);
+										break;
+									case TIMESTAMP:
+										defaultPolicy.appendChild(
+											wsdlDocument.createElement(
+												Constants.WS_SECURITY_POLICY_PREFIX + ":IncludeTimestamp"
+											)
+										);
+										break;
+									case URL:
+										messager.printMessage(Kind.MANDATORY_WARNING, "@Fresh(URL)" + NOT_YET_IMPLEMENTED, element);
+								}
 
 						//@Integrity
 						if (annotation.getQualifiedName().toString().equals(Integrity.class.getCanonicalName()))
-							messager.printMessage(Kind.MANDATORY_WARNING, "@Integrity" + NOT_YET_IMPLEMENTED);
+							messager.printMessage(Kind.MANDATORY_WARNING, "@Integrity" + NOT_YET_IMPLEMENTED, element);
 
 						//@Logged
 						if (annotation.getQualifiedName().toString().equals(Logged.class.getCanonicalName()))
-							messager.printMessage(Kind.MANDATORY_WARNING, "@Logged" + NOT_YET_IMPLEMENTED);
+							messager.printMessage(Kind.MANDATORY_WARNING, "@Logged" + NOT_YET_IMPLEMENTED, element);
 
 						//@Policies
 						if (annotation.getQualifiedName().toString().equals(Policies.class.getCanonicalName())) {
@@ -184,31 +198,41 @@ public class JasonProcessor extends AbstractProcessor {
 									XPathConstants.NODE
 								);
 								if (policyElement == null)
-									messager.printMessage(Kind.ERROR, "Policyname " + policy.name() + " should be specified as one the @AvailablePolicies");
+									messager.printMessage(Kind.ERROR, "Policyname " + policy.name() + " should be specified as one the @AvailablePolicies", element);
 								else {
 									try {
 										if (policy.accessibleTo() != null)
-											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(accessibleTo=...)" + NOT_YET_IMPLEMENTED);
+											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(accessibleTo=...)" + NOT_YET_IMPLEMENTED, element);
 									} catch (IncompleteAnnotationException ex) {}
 									try {
 										Authentic authentic = policy.authentic();
-										addSecurityParts(policyElement, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements");
+										addSecurityParts(
+											policyElement,
+											wsdlDocument,
+											element,
+											Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements"
+										);
 									} catch (IncompleteAnnotationException ex) {}
 									try {
 										Confidential confidential = policy.confidential();
-										addSecurityParts(policyElement, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts");
+										addSecurityParts(
+											policyElement,
+											wsdlDocument,
+											element,
+											Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts"
+										);
 									} catch (IncompleteAnnotationException ex) {}
 									try {
 										if (policy.integrity() != null)
-											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(integrity=..)" + NOT_YET_IMPLEMENTED);
+											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(integrity=..)" + NOT_YET_IMPLEMENTED, element);
 									} catch (IncompleteAnnotationException ex) {}
 									try {
 										if (policy.logged() != null)
-											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(logged=...)" + NOT_YET_IMPLEMENTED);
+											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(logged=...)" + NOT_YET_IMPLEMENTED, element);
 									} catch (IncompleteAnnotationException ex) {}
 									try {
 										if (policy.roles() != null)
-											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(roles=...)" + NOT_YET_IMPLEMENTED);
+											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(roles=...)" + NOT_YET_IMPLEMENTED, element);
 									} catch (IncompleteAnnotationException ex) {}
 								}
 							}
@@ -216,11 +240,17 @@ public class JasonProcessor extends AbstractProcessor {
 
 						//@Policy
 						if (annotation.getQualifiedName().toString().equals(Policy.class.getCanonicalName()))
-							messager.printMessage(Kind.ERROR, "@Policy can only be used inside a @Policies annotation");
+							messager.printMessage(Kind.ERROR, "@Policy can only be used inside a @Policies annotation", element);
 
 						//@Roles
 						if (annotation.getQualifiedName().toString().equals(Roles.class.getCanonicalName()))
-							messager.printMessage(Kind.MANDATORY_WARNING, "@Roles" + NOT_YET_IMPLEMENTED);
+							for (String role : element.getAnnotation(Roles.class).value())
+								roleNames.add(role);
+
+						//@ServiceRoles
+						if (annotation.getQualifiedName().toString().equals(ServiceRoles.class.getCanonicalName()))
+							for (String role : element.getAnnotation(ServiceRoles.class).value())
+								serviceRoleNames.add(role);
 					}
 				}
 
@@ -240,7 +270,7 @@ public class JasonProcessor extends AbstractProcessor {
 					)
 				);
 			}
-			messager.printMessage(Kind.NOTE, "---Finished processing---");
+//			messager.printMessage(Kind.NOTE, "---Finished processing---");
 			processed = true;
 		} catch (TransformerException ex) {
 			messager.printMessage(Kind.ERROR, ex.getLocalizedMessage());
@@ -252,110 +282,6 @@ public class JasonProcessor extends AbstractProcessor {
 			messager.printMessage(Kind.ERROR, ex.getLocalizedMessage());
 		}
 		return processed;
-//		try {
-//			for (Element serviceClass : roundEnv.getElementsAnnotatedWith(AvailablePolicies.class)) {
-//				AvailablePolicies policies = serviceClass.getAnnotation(AvailablePolicies.class);
-//				for (String policyVersion : policies.value()) {
-//					Name packageName = ((PackageElement) serviceClass.getEnclosingElement()).getQualifiedName();
-//					Name className = serviceClass.getSimpleName();
-//					FileObject resource = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, packageName, className + "_" + policyVersion + ".xml", serviceClass);
-//					Writer writer = resource.openWriter();
-//					writer.write("<?xml version=\"1.0\"?>\n");
-//					writer.write("<service xmlns=\"" + Constants.JASON_NAMESPACE + "\" name=\"" + className + "\" package=\"" + packageName + "\" version=\"" + policyVersion + "\">\n");
-//					for (Element method : serviceClass.getEnclosedElements())
-//						if (method.getKind() == ElementKind.METHOD) {
-//							boolean methodIsAnnotated = false;
-//							StringBuilder methodOutput = new StringBuilder();
-//							methodOutput.append("\t<method name=\"" + method.getSimpleName() + "\">\n");
-//
-//							//Parameters
-//							StringBuilder annotationOutput = new StringBuilder();
-//							for (Element parameter : ((ExecutableElement) method).getParameters())
-//								if (parameter.getKind() == ElementKind.PARAMETER) {
-//									String parameterAnnotationOutput = processElement(parameter, policyVersion);
-//									String tag = "\t\t<param name=\"" + parameter.getSimpleName() + "\"";
-//									if (parameterAnnotationOutput != null) {
-//										methodIsAnnotated = true;
-//										annotationOutput.append(tag + ">\n" + parameterAnnotationOutput + "\t\t</param>\n");
-//									} else
-//										annotationOutput.append(tag + "/>\n");
-//								}
-//							methodOutput.append(annotationOutput.toString());
-//
-//							//Result
-//							String resultAnnotationOutput = processElement(method, policyVersion);
-//							if (resultAnnotationOutput != null) {
-//								methodIsAnnotated = true;
-//								methodOutput.append("\t\t<result>\n");
-//								methodOutput.append(resultAnnotationOutput);
-//								methodOutput.append("\t\t</result>\n");
-//							}
-//
-//							methodOutput.append("\t</method>\n");
-//							if (methodIsAnnotated)
-//								writer.append(methodOutput.toString());
-//						}
-//
-//					writer.write("</service>");
-//					writer.close();
-//				}
-//			}
-//		} catch (IOException ex) {
-//			messager.printMessage(Kind.ERROR, ex.getMessage());
-//		}
-//		return true;
-//		try {
-//			for (Element serviceClass : roundEnv.getElementsAnnotatedWith(AvailablePolicies.class)) {
-//				AvailablePolicies policies = serviceClass.getAnnotation(AvailablePolicies.class);
-//				for (String policyVersion : policies.value()) {
-//					Name packageName = ((PackageElement) serviceClass.getEnclosingElement()).getQualifiedName();
-//					Name className = serviceClass.getSimpleName();
-//					FileObject resource = processingEnv.getFiler().createResource(StandardLocation.SOURCE_OUTPUT, packageName, className + "_" + policyVersion + ".xml", serviceClass);
-//					Writer writer = resource.openWriter();
-//					writer.write("<?xml version=\"1.0\"?>\n");
-//					writer.write("<service xmlns=\"" + Constants.JASON_NAMESPACE + "\" name=\"" + className + "\" package=\"" + packageName + "\" version=\"" + policyVersion + "\">\n");
-//					for (Element method : serviceClass.getEnclosedElements())
-//						if (method.getKind() == ElementKind.METHOD) {
-//							boolean methodIsAnnotated = false;
-//							StringBuilder methodOutput = new StringBuilder();
-//							methodOutput.append("\t<method name=\"" + method.getSimpleName() + "\">\n");
-//
-//							//Parameters
-//							StringBuilder annotationOutput = new StringBuilder();
-//							for (Element parameter : ((ExecutableElement) method).getParameters())
-//								if (parameter.getKind() == ElementKind.PARAMETER) {
-//									String parameterAnnotationOutput = processElement(parameter, policyVersion);
-//									String tag = "\t\t<param name=\"" + parameter.getSimpleName() + "\"";
-//									if (parameterAnnotationOutput != null) {
-//										methodIsAnnotated = true;
-//										annotationOutput.append(tag + ">\n" + parameterAnnotationOutput + "\t\t</param>\n");
-//									} else
-//										annotationOutput.append(tag + "/>\n");
-//								}
-//							methodOutput.append(annotationOutput.toString());
-//
-//							//Result
-//							String resultAnnotationOutput = processElement(method, policyVersion);
-//							if (resultAnnotationOutput != null) {
-//								methodIsAnnotated = true;
-//								methodOutput.append("\t\t<result>\n");
-//								methodOutput.append(resultAnnotationOutput);
-//								methodOutput.append("\t\t</result>\n");
-//							}
-//
-//							methodOutput.append("\t</method>\n");
-//							if (methodIsAnnotated)
-//								writer.append(methodOutput.toString());
-//						}
-//
-//					writer.write("</service>");
-//					writer.close();
-//				}
-//			}
-//		} catch (IOException ex) {
-//			messager.printMessage(Kind.ERROR, ex.getMessage());
-//		}
-//		return true;
 	}
 
 	private void addSecurityParts(Node policy, Document wsdlDocument, Element element, String partType) throws DOMException {

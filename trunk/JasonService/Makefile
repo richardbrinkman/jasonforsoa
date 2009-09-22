@@ -63,7 +63,7 @@ build/classes/Startup/jason.policy: src/StartupSource/jason.policy
 force: ;
 
 ../JasonCompiler/%: force
-	make -C ../JasonCompiler $*
+	@make --no-print-directory -C ../JasonCompiler $*
 
 ../JasonFramework/%: force
-	make -C ../JasonFramework $*
+	@make --no-print-directory -C ../JasonFramework $*
