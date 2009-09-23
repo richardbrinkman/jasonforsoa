@@ -109,15 +109,14 @@ public class JasonProcessor extends AbstractProcessor {
 							messager.printMessage(Kind.MANDATORY_WARNING, "@AccessibleTo" + NOT_YET_IMPLEMENTED, element);
 
 						//@Authentic
-						if (annotation.getQualifiedName().toString().equals(Authentic.class.getCanonicalName())) {
-							String signedBy = element.getAnnotation(Authentic.class).signedBy();
-							if (!signedBy.equals("")) {
-								messager.printMessage(Kind.MANDATORY_WARNING, "signedBy attribute for @Authentic" + NOT_YET_IMPLEMENTED, element);
-								if (!serviceRoleNames.contains(signedBy))
-									messager.printMessage(Kind.ERROR, "signedBy attribute value must be one that is specified in @ServiceRoles", element);
-							}
-							addSecurityParts(defaultPolicy, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements");
-						}
+						if (annotation.getQualifiedName().toString().equals(Authentic.class.getCanonicalName())) 
+							processAuthentic(
+								element.getAnnotation(Authentic.class),
+								element,
+								serviceRoleNames,
+								defaultPolicy,
+								wsdlDocument
+							);
 
 						//@AvailablePolicies
 						if (annotation.getQualifiedName().toString().equals(AvailablePolicies.class.getCanonicalName())) {
@@ -129,55 +128,22 @@ public class JasonProcessor extends AbstractProcessor {
 									)
 								);
 							}
-							for (String policyName : availablePolicies.value()) {
-								org.w3c.dom.Element policy = wsdlDocument.createElement(
-									Constants.WS_POLICY_PREFIX + ":Policy"
-								);
-								policy.setAttribute(Constants.WS_SECURITY_UTILITY_PREFIX + ":Id", policyName);
-								alternativePolicies.appendChild(
-									wsdlDocument.createElement(
-										Constants.WS_POLICY_PREFIX + ":All"
-									)
-								).appendChild(policy).appendChild(
-									wsdlDocument.createElement(
-										Constants.WS_POLICY_PREFIX + ":ExactlyOne"
-									)
-								).appendChild(
-									wsdlDocument.createElement(
-										Constants.WS_POLICY_PREFIX + ":All"
-									)
-								);
-							}
+							processAvailablePolicies(availablePolicies, wsdlDocument, alternativePolicies);
 						}
 
 						//@Confidential
-						if (annotation.getQualifiedName().toString().equals(Confidential.class.getCanonicalName())) {
-							String encryptedFor = element.getAnnotation(Confidential.class).encryptedFor();
-							if (!encryptedFor.equals("")) {
-								messager.printMessage(Kind.MANDATORY_WARNING, "encryptedFor attribute for @Confidential" + NOT_YET_IMPLEMENTED, element);
-								if (!roleNames.contains(encryptedFor))
-									messager.printMessage(Kind.ERROR, "encryptedFor attribute value bust be one that is specified in @Roles", element);
-							}
-							addSecurityParts(defaultPolicy, wsdlDocument, element, Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts");
-						}
+						if (annotation.getQualifiedName().toString().equals(Confidential.class.getCanonicalName())) 
+							processConfidential(
+								element.getAnnotation(Confidential.class),
+								element,
+								roleNames,
+								defaultPolicy,
+								wsdlDocument
+							);
 
 						//@Fresh
 						if (annotation.getQualifiedName().toString().equals(Fresh.class.getCanonicalName()))
-							for (Check check : element.getAnnotation(Fresh.class).check())
-								switch (check) {
-									case SEQUENCE_NUMBER:
-										messager.printMessage(Kind.MANDATORY_WARNING, "@Fresh(SEQUENCE_NUMBER)" + NOT_YET_IMPLEMENTED, element);
-										break;
-									case TIMESTAMP:
-										defaultPolicy.appendChild(
-											wsdlDocument.createElement(
-												Constants.WS_SECURITY_POLICY_PREFIX + ":IncludeTimestamp"
-											)
-										);
-										break;
-									case URL:
-										messager.printMessage(Kind.MANDATORY_WARNING, "@Fresh(URL)" + NOT_YET_IMPLEMENTED, element);
-								}
+							processFresh(element, defaultPolicy, wsdlDocument);
 
 						//@Integrity
 						if (annotation.getQualifiedName().toString().equals(Integrity.class.getCanonicalName()))
@@ -188,55 +154,8 @@ public class JasonProcessor extends AbstractProcessor {
 							messager.printMessage(Kind.MANDATORY_WARNING, "@Logged" + NOT_YET_IMPLEMENTED, element);
 
 						//@Policies
-						if (annotation.getQualifiedName().toString().equals(Policies.class.getCanonicalName())) {
-							XPath xpath = XPathFactory.newInstance().newXPath();
-							Policies policies = element.getAnnotation(Policies.class);
-							for (Policy policy : policies.value()) {
-								Node policyElement = (Node) xpath.evaluate(
-									"All/Policy[@Id=\"" + policy.name() +"\"]/ExactlyOne/All",
-									alternativePolicies,
-									XPathConstants.NODE
-								);
-								if (policyElement == null)
-									messager.printMessage(Kind.ERROR, "Policyname " + policy.name() + " should be specified as one the @AvailablePolicies", element);
-								else {
-									try {
-										if (policy.accessibleTo() != null)
-											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(accessibleTo=...)" + NOT_YET_IMPLEMENTED, element);
-									} catch (IncompleteAnnotationException ex) {}
-									try {
-										Authentic authentic = policy.authentic();
-										addSecurityParts(
-											policyElement,
-											wsdlDocument,
-											element,
-											Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements"
-										);
-									} catch (IncompleteAnnotationException ex) {}
-									try {
-										Confidential confidential = policy.confidential();
-										addSecurityParts(
-											policyElement,
-											wsdlDocument,
-											element,
-											Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts"
-										);
-									} catch (IncompleteAnnotationException ex) {}
-									try {
-										if (policy.integrity() != null)
-											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(integrity=..)" + NOT_YET_IMPLEMENTED, element);
-									} catch (IncompleteAnnotationException ex) {}
-									try {
-										if (policy.logged() != null)
-											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(logged=...)" + NOT_YET_IMPLEMENTED, element);
-									} catch (IncompleteAnnotationException ex) {}
-									try {
-										if (policy.roles() != null)
-											messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(roles=...)" + NOT_YET_IMPLEMENTED, element);
-									} catch (IncompleteAnnotationException ex) {}
-								}
-							}
-						}
+						if (annotation.getQualifiedName().toString().equals(Policies.class.getCanonicalName())) 
+							processPolicies(element, alternativePolicies, wsdlDocument, roleNames, serviceRoleNames);
 
 						//@Policy
 						if (annotation.getQualifiedName().toString().equals(Policy.class.getCanonicalName()))
@@ -244,13 +163,11 @@ public class JasonProcessor extends AbstractProcessor {
 
 						//@Roles
 						if (annotation.getQualifiedName().toString().equals(Roles.class.getCanonicalName()))
-							for (String role : element.getAnnotation(Roles.class).value())
-								roleNames.add(role);
+							processRoles(element, roleNames);
 
 						//@ServiceRoles
 						if (annotation.getQualifiedName().toString().equals(ServiceRoles.class.getCanonicalName()))
-							for (String role : element.getAnnotation(ServiceRoles.class).value())
-								serviceRoleNames.add(role);
+							processServiceRoles(element, serviceRoleNames);
 					}
 				}
 
@@ -321,5 +238,145 @@ public class JasonProcessor extends AbstractProcessor {
 				result = null;
 		}
 		return result;
+	}
+
+	private void processAuthentic(Authentic authentic, Element element, Set<String> serviceRoleNames, Node policy, Document wsdlDocument) throws DOMException {
+		String signedBy = authentic.signedBy();
+		if (!"".equals(signedBy)) {
+			messager.printMessage(Kind.MANDATORY_WARNING, "signedBy attribute for @Authentic" + NOT_YET_IMPLEMENTED, element);
+			if (!serviceRoleNames.contains(signedBy)) {
+				messager.printMessage(Kind.ERROR, "signedBy attribute value must be one that is specified in @ServiceRoles", element);
+			}
+		}
+		addSecurityParts(
+			policy,
+			wsdlDocument,
+			element,
+			Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements"
+		);
+	}
+
+	private void processAvailablePolicies(AvailablePolicies availablePolicies, Document wsdlDocument, org.w3c.dom.Element alternativePolicies) throws DOMException {
+		for (String policyName : availablePolicies.value()) {
+			org.w3c.dom.Element policy = wsdlDocument.createElement(Constants.WS_POLICY_PREFIX + ":Policy");
+			policy.setAttribute(Constants.WS_SECURITY_UTILITY_PREFIX + ":Id", policyName);
+			alternativePolicies.appendChild(wsdlDocument.createElement(Constants.WS_POLICY_PREFIX + ":All")).appendChild(policy).appendChild(wsdlDocument.createElement(Constants.WS_POLICY_PREFIX + ":ExactlyOne")).appendChild(wsdlDocument.createElement(Constants.WS_POLICY_PREFIX + ":All"));
+		}
+	}
+
+	private void processConfidential(Confidential confidential, Element element, Set<String> roleNames, Node policy, Document wsdlDocument) throws DOMException {
+		String encryptedFor = confidential.encryptedFor();
+		if (!"".equals(encryptedFor)) {
+			messager.printMessage(Kind.MANDATORY_WARNING, "encryptedFor attribute for @Confidential" + NOT_YET_IMPLEMENTED, element);
+			if (!roleNames.contains(encryptedFor)) {
+				messager.printMessage(Kind.ERROR, "encryptedFor attribute value bust be one that is specified in @Roles", element);
+			}
+		}
+		addSecurityParts(
+			policy,
+			wsdlDocument,
+			element,
+			Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts"
+		);
+	}
+
+	private void processFresh(Element element, Node policy, Document wsdlDocument) {
+		for (Check check : element.getAnnotation(Fresh.class).check())
+			switch (check) {
+				case SEQUENCE_NUMBER:
+					messager.printMessage(Kind.MANDATORY_WARNING, "@Fresh(SEQUENCE_NUMBER)" + NOT_YET_IMPLEMENTED, element);
+					break;
+				case TIMESTAMP:
+					policy.appendChild(
+						wsdlDocument.createElement(
+							Constants.WS_SECURITY_POLICY_PREFIX + ":IncludeTimestamp"
+						)
+					);
+					break;
+				case URL:
+					messager.printMessage(Kind.MANDATORY_WARNING, "@Fresh(URL)" + NOT_YET_IMPLEMENTED, element);
+			}
+	}
+
+	private void processPolicies(Element element, org.w3c.dom.Element alternativePolicies, Document wsdlDocument, Set<String> roleNames,Set<String> serviceRoleNames) throws XPathExpressionException, DOMException {
+		XPath xpath = XPathFactory.newInstance().newXPath();
+		Policies policies = element.getAnnotation(Policies.class);
+		for (Policy policy : policies.value()) {
+			Node policyElement = (Node) xpath.evaluate(
+				"All/Policy[@Id=\"" + policy.name() +"\"]/ExactlyOne/All",
+				alternativePolicies,
+				XPathConstants.NODE
+			);
+			if (policyElement == null) {
+				messager.printMessage(Kind.ERROR, "Policyname " + policy.name() + " should be specified as one the @AvailablePolicies", element);
+			} else {
+				try {
+					if (policy.accessibleTo() != null) {
+						messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(accessibleTo=...)" + NOT_YET_IMPLEMENTED, element);
+					}
+				} catch (IncompleteAnnotationException ex) {
+				}
+				try {
+					if (policy.authentic() != null) {
+						processAuthentic(policy.authentic(), element, serviceRoleNames, policyElement, wsdlDocument);
+					}
+				} catch (IncompleteAnnotationException ex) {
+				}
+				try {
+					if (policy.confidential() != null) {
+						processConfidential(policy.confidential(), element, roleNames, policyElement, wsdlDocument);
+					}
+				} catch (IncompleteAnnotationException ex) {
+				}
+				try {
+					if (policy.fresh() != null) {
+						processFresh(element, policyElement, wsdlDocument);
+					}
+				} catch (IncompleteAnnotationException ex) {
+				}
+				try {
+					if (policy.integrity() != null) {
+						messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(integrity=..)" + NOT_YET_IMPLEMENTED, element);
+					}
+				} catch (IncompleteAnnotationException ex) {
+				}
+				try {
+					if (policy.logged() != null) {
+						messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(logged=...)" + NOT_YET_IMPLEMENTED, element);
+					}
+				} catch (IncompleteAnnotationException ex) {
+				}
+				try {
+					if (policy.provideRole() != null) {
+						messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(provideRole=..)" + NOT_YET_IMPLEMENTED, element);
+					}
+				} catch (IncompleteAnnotationException ex) {
+				}
+				try {
+					if (policy.roles() != null) {
+						messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(roles=...)" + NOT_YET_IMPLEMENTED, element);
+					}
+				} catch (IncompleteAnnotationException ex) {
+				}
+				try {
+					if (policy.serviceRoles() != null) {
+						messager.printMessage(Kind.MANDATORY_WARNING, "@Policy(serviceRoles=..)" + NOT_YET_IMPLEMENTED, element);
+					}
+				} catch (IncompleteAnnotationException ex) {
+				}
+			}
+		}
+	}
+
+	private void processRoles(Element element, Set<String> roleNames) {
+		for (String role : element.getAnnotation(Roles.class).value()) {
+			roleNames.add(role);
+		}
+	}
+
+	private void processServiceRoles(Element element, Set<String> serviceRoleNames) {
+		for (String role : element.getAnnotation(ServiceRoles.class).value()) {
+			serviceRoleNames.add(role);
+		}
 	}
 }

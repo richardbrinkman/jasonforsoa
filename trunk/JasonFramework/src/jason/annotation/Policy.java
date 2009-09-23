@@ -39,7 +39,10 @@ public @interface Policy {
 	AccessibleTo accessibleTo();
 	Authentic authentic();
 	Confidential confidential();
+	Fresh fresh();
 	Integrity integrity();
+	ProvideRole provideRole();
 	Logged logged();
 	Roles roles();
+	ServiceRoles serviceRoles();
 }
