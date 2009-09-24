@@ -86,6 +86,10 @@ public class JasonProcessor extends AbstractProcessor {
 					"xmlns:" + Constants.WS_SECURITY_UTILITY_PREFIX,
 					Constants.WS_SECURITY_UTILITY_NAMESPACE
 				);
+				policyRoot.setAttribute(
+					"xmlns:" + Constants.JASON_PREFIX,
+					Constants.JASON_NAMESPACE
+				);
 				Node defaultPolicy = policyRoot.appendChild(
 					wsdlDocument.createElement(Constants.WS_POLICY_PREFIX + ":ExactlyOne")
 				).appendChild(wsdlDocument.createElement(Constants.WS_POLICY_PREFIX + ":All"));
@@ -201,18 +205,6 @@ public class JasonProcessor extends AbstractProcessor {
 		return processed;
 	}
 
-	private void addSecurityParts(Node policy, Document wsdlDocument, Element element, String partType) throws DOMException {
-		policy.appendChild(
-			wsdlDocument.createElement(
-				partType
-			)
-		).appendChild(
-			wsdlDocument.createElement(Constants.WS_SECURITY_POLICY_PREFIX + ":XPath")
-		).setTextContent(
-			extractXPath(element)
-		);
-	}
-
 	private String extractServiceName(Element element) {
 		String result;
 		if (element.getKind() == ElementKind.CLASS)
@@ -241,19 +233,27 @@ public class JasonProcessor extends AbstractProcessor {
 	}
 
 	private void processAuthentic(Authentic authentic, Element element, Set<String> serviceRoleNames, Node policy, Document wsdlDocument) throws DOMException {
+		Node part = policy.appendChild(
+			wsdlDocument.createElement(
+				Constants.WS_SECURITY_POLICY_PREFIX + ":SignedParts"
+			)
+		);
+		part.appendChild(
+			wsdlDocument.createElement(Constants.WS_SECURITY_POLICY_PREFIX + ":XPath")
+		).setTextContent(
+			extractXPath(element)
+		);
 		String signedBy = authentic.signedBy();
 		if (!"".equals(signedBy)) {
-			messager.printMessage(Kind.MANDATORY_WARNING, "signedBy attribute for @Authentic" + NOT_YET_IMPLEMENTED, element);
-			if (!serviceRoleNames.contains(signedBy)) {
-				messager.printMessage(Kind.ERROR, "signedBy attribute value must be one that is specified in @ServiceRoles", element);
-			}
+			if (serviceRoleNames.contains(signedBy)) {
+				part.appendChild(
+					wsdlDocument.createElement(
+						Constants.JASON_PREFIX + ":rolename"
+					)
+				).setTextContent(signedBy);
+			} else
+				messager.printMessage(Kind.ERROR, "signedBy attribute value (" + signedBy + ") must be one that is specified in @ServiceRoles", element);
 		}
-		addSecurityParts(
-			policy,
-			wsdlDocument,
-			element,
-			Constants.WS_SECURITY_POLICY_PREFIX + ":SignedElements"
-		);
 	}
 
 	private void processAvailablePolicies(AvailablePolicies availablePolicies, Document wsdlDocument, org.w3c.dom.Element alternativePolicies) throws DOMException {
@@ -265,19 +265,27 @@ public class JasonProcessor extends AbstractProcessor {
 	}
 
 	private void processConfidential(Confidential confidential, Element element, Set<String> roleNames, Node policy, Document wsdlDocument) throws DOMException {
+		Node part = policy.appendChild(
+			wsdlDocument.createElement(
+				Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts"
+			)
+		);
+		part.appendChild(
+			wsdlDocument.createElement(Constants.WS_SECURITY_POLICY_PREFIX + ":XPath")
+		).setTextContent(
+			extractXPath(element)
+		);
 		String encryptedFor = confidential.encryptedFor();
 		if (!"".equals(encryptedFor)) {
-			messager.printMessage(Kind.MANDATORY_WARNING, "encryptedFor attribute for @Confidential" + NOT_YET_IMPLEMENTED, element);
-			if (!roleNames.contains(encryptedFor)) {
-				messager.printMessage(Kind.ERROR, "encryptedFor attribute value bust be one that is specified in @Roles", element);
-			}
+			if (roleNames.contains(encryptedFor)) {
+				part.appendChild(
+					wsdlDocument.createElement(
+						Constants.JASON_PREFIX + ":rolename"
+					)
+				).setTextContent(encryptedFor);
+			} else
+				messager.printMessage(Kind.ERROR, "encryptedFor attribute value (" + encryptedFor + ") must be one that is specified in @Roles", element);
 		}
-		addSecurityParts(
-			policy,
-			wsdlDocument,
-			element,
-			Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts"
-		);
 	}
 
 	private void processFresh(Element element, Node policy, Document wsdlDocument) {
