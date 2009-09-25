@@ -5,7 +5,7 @@ all: dist/JasonCompiler.jar
 dist/JasonCompiler.jar: \
   build/classes/jason/compiler/JasonProcessor.class \
   build/classes/jason/compiler/Merge.class
-	jar cf $@ -C build/classes jason
+	jar cfe $@ jason.compiler.Merge -C build/classes jason
 
 build/classes/%.class: src/%.java ../JasonFramework/dist/JasonFramework.jar
 	javac -cp build/classes:../JasonFramework/dist/JasonFramework.jar -d build/classes $<
