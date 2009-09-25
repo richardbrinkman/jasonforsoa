@@ -117,7 +117,8 @@ public class JasonProcessor extends AbstractProcessor {
 							processAuthentic(
 								element.getAnnotation(Authentic.class),
 								element,
-								serviceRoleNames,
+								serviceRoleNames, 
+								roleNames,
 								defaultPolicy,
 								wsdlDocument
 							);
@@ -140,6 +141,7 @@ public class JasonProcessor extends AbstractProcessor {
 							processConfidential(
 								element.getAnnotation(Confidential.class),
 								element,
+								serviceRoleNames,
 								roleNames,
 								defaultPolicy,
 								wsdlDocument
@@ -232,7 +234,7 @@ public class JasonProcessor extends AbstractProcessor {
 		return result;
 	}
 
-	private void processAuthentic(Authentic authentic, Element element, Set<String> serviceRoleNames, Node policy, Document wsdlDocument) throws DOMException {
+	private void processAuthentic(Authentic authentic, Element element, Set<String> serviceRoleNames,Set<String> roleNames, Node policy, Document wsdlDocument) throws DOMException {
 		Node part = policy.appendChild(
 			wsdlDocument.createElement(
 				Constants.WS_SECURITY_POLICY_PREFIX + ":SignedParts"
@@ -245,14 +247,14 @@ public class JasonProcessor extends AbstractProcessor {
 		);
 		String signedBy = authentic.signedBy();
 		if (!"".equals(signedBy)) {
-			if (serviceRoleNames.contains(signedBy)) {
+			if (serviceRoleNames.contains(signedBy) || roleNames.contains(signedBy)) {
 				part.appendChild(
 					wsdlDocument.createElement(
 						Constants.JASON_PREFIX + ":rolename"
 					)
 				).setTextContent(signedBy);
 			} else
-				messager.printMessage(Kind.ERROR, "signedBy attribute value (" + signedBy + ") must be one that is specified in @ServiceRoles", element);
+				messager.printMessage(Kind.ERROR, "signedBy attribute value (" + signedBy + ") must be one that is specified in @ServiceRoles or @Roles", element);
 		}
 	}
 
@@ -264,7 +266,7 @@ public class JasonProcessor extends AbstractProcessor {
 		}
 	}
 
-	private void processConfidential(Confidential confidential, Element element, Set<String> roleNames, Node policy, Document wsdlDocument) throws DOMException {
+	private void processConfidential(Confidential confidential, Element element,Set<String> serviceRoleNames, Set<String> roleNames, Node policy, Document wsdlDocument) throws DOMException {
 		Node part = policy.appendChild(
 			wsdlDocument.createElement(
 				Constants.WS_SECURITY_POLICY_PREFIX + ":EncryptedParts"
@@ -277,14 +279,14 @@ public class JasonProcessor extends AbstractProcessor {
 		);
 		String encryptedFor = confidential.encryptedFor();
 		if (!"".equals(encryptedFor)) {
-			if (roleNames.contains(encryptedFor)) {
+			if (roleNames.contains(encryptedFor) || serviceRoleNames.contains(encryptedFor)) {
 				part.appendChild(
 					wsdlDocument.createElement(
 						Constants.JASON_PREFIX + ":rolename"
 					)
 				).setTextContent(encryptedFor);
 			} else
-				messager.printMessage(Kind.ERROR, "encryptedFor attribute value (" + encryptedFor + ") must be one that is specified in @Roles", element);
+				messager.printMessage(Kind.ERROR, "encryptedFor attribute value (" + encryptedFor + ") must be one that is specified in @Roles or @ServiceRoles", element);
 		}
 	}
 
@@ -326,13 +328,13 @@ public class JasonProcessor extends AbstractProcessor {
 				}
 				try {
 					if (policy.authentic() != null) {
-						processAuthentic(policy.authentic(), element, serviceRoleNames, policyElement, wsdlDocument);
+						processAuthentic(policy.authentic(), element, serviceRoleNames, roleNames, policyElement, wsdlDocument);
 					}
 				} catch (IncompleteAnnotationException ex) {
 				}
 				try {
 					if (policy.confidential() != null) {
-						processConfidential(policy.confidential(), element, roleNames, policyElement, wsdlDocument);
+						processConfidential(policy.confidential(), element, serviceRoleNames, roleNames, policyElement, wsdlDocument);
 					}
 				} catch (IncompleteAnnotationException ex) {
 				}
