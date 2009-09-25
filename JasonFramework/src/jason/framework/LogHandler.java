@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -48,7 +49,7 @@ public class LogHandler implements SOAPHandler<SOAPMessageContext> {
 	public boolean handleFault(SOAPMessageContext context) {
 		try {
 			SOAPMessage message = context.getMessage();
-			prettyPrintXML("handleFault:\n" + direction(context), message.getSOAPPart());
+			logger.log(Level.SEVERE, "handleFault:\n" + direction(context) + prettyPrintXML(message.getSOAPPart()));
 		} catch (TransformerConfigurationException ex) {
 			logger.log(Level.SEVERE, null, ex);
 		} catch (TransformerException ex) {
@@ -66,7 +67,7 @@ public class LogHandler implements SOAPHandler<SOAPMessageContext> {
 	public boolean handleMessage(SOAPMessageContext context) {
 		SOAPMessage message = context.getMessage();
 		try {
-			prettyPrintXML(direction(context),message.getSOAPPart());
+			logger.info(direction(context) + prettyPrintXML(message.getSOAPPart()));
 		} catch (TransformerConfigurationException ex) {
 			logger.log(Level.SEVERE, null, ex);
 		} catch (TransformerException ex) {
@@ -86,15 +87,16 @@ public class LogHandler implements SOAPHandler<SOAPMessageContext> {
 	 * @throws javax.xml.transform.TransformerConfigurationException
 	 * @throws javax.xml.transform.TransformerException
 	 */
-	protected void prettyPrintXML(String type, Node node) throws TransformerConfigurationException, TransformerException {
+	protected String prettyPrintXML(Node node) throws TransformerConfigurationException, TransformerException {
 		DOMSource source = new DOMSource(node);
 		StringWriter output = new StringWriter();
-		output.append(type);
 		StreamResult target = new StreamResult(output);
-		Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		transformer.setOutputProperty("method", "xml");
-		transformer.setOutputProperty("indent", "yes");
+		TransformerFactory factory = TransformerFactory.newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
+		factory.setAttribute("indent-number", Integer.valueOf(2));
+		Transformer transformer = factory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 		transformer.transform(source, target);
-		logger.log(Level.INFO, output.toString());
+		return output.toString();
 	}
 }

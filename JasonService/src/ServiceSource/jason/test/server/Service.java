@@ -34,6 +34,7 @@ public class Service {
 			@Policy(name="NewVersion", confidential=@Confidential)
 		})
 		String name) {
+//		throw new RuntimeException("Test exception");
 		return "Hello " + name;
 	}
 	
