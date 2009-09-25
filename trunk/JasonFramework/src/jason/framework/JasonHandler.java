@@ -17,8 +17,6 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
@@ -144,18 +142,7 @@ public class JasonHandler implements SOAPHandler<SOAPMessageContext> {
 
 	@Override 
 	public boolean handleFault(SOAPMessageContext context) {
-		//TODO: log to logger instead of System.out
-		SOAPMessage message = context.getMessage();
-		System.out.print("handleFault:\n\t");
-		try {
-			message.writeTo(System.out);
-		} catch (SOAPException ex) {
-			logger.log(Level.SEVERE, null, ex);
-		} catch (IOException ex) {
-			logger.log(Level.SEVERE, null, ex);
-		}
-		System.out.println("\n");
-		return false;
+		return true; //Let the LogHandler log the fault
 	}
 
 	/**

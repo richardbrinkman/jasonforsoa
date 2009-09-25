@@ -53,9 +53,9 @@ build/classes/Service/jason/test/server/jaxws/SayHelloResponse.class: \
 
 build/classes/Service/Service.wsdl: \
   build/classes/Service/ServiceService.wsdl \
-  build/classes/Service/jason/test/server/Service.wsp
-	$(MAKE) -C ../JasonCompiler dist/JasonCompiler.jar
-	java -cp ../JasonCompiler/dist/JasonCompiler.jar jason.compiler.Merge $+ $@
+  build/classes/Service/jason/test/server/Service.wsp \
+  ../JasonCompiler/dist/JasonCompiler.jar
+	java -jar ../JasonCompiler/dist/JasonCompiler.jar build/classes/Service/{ServiceService.wsdl,jason/test/server/Service.wsp} $@
 
 build/classes/Startup/jason.policy: src/StartupSource/jason.policy
 	cp $< build/classes/Startup
@@ -63,7 +63,7 @@ build/classes/Startup/jason.policy: src/StartupSource/jason.policy
 force: ;
 
 ../JasonCompiler/%: force
-	@make --no-print-directory -C ../JasonCompiler $*
+	@$(MAKE) --no-print-directory -C ../JasonCompiler $*
 
 ../JasonFramework/%: force
-	@make --no-print-directory -C ../JasonFramework $*
+	@$(MAKE) --no-print-directory -C ../JasonFramework $*
