@@ -220,11 +220,10 @@ public class JasonProcessor extends AbstractProcessor {
 		String result;
 		switch (element.getKind()) {
 			case METHOD:
-				result = extractServiceName(element) + "Response/return"; break;
+				result = element.getSimpleName().toString() + "Response/return";
+				break;
 			case PARAMETER: 
-				result = extractServiceName(element) +
-				         "/" +
-								 element.getEnclosingElement().getSimpleName().toString() + //method name
+				result = element.getEnclosingElement().getSimpleName().toString() + //method name
 								 "/" +
 								 element.getSimpleName().toString();
 				break;
@@ -250,7 +249,7 @@ public class JasonProcessor extends AbstractProcessor {
 			if (serviceRoleNames.contains(signedBy) || roleNames.contains(signedBy)) {
 				part.appendChild(
 					wsdlDocument.createElement(
-						Constants.JASON_PREFIX + ":rolename"
+						Constants.JASON_PREFIX + ":rolename" //We might consider {http://ws.apache.org/rampart/policy}user for this
 					)
 				).setTextContent(signedBy);
 			} else
@@ -290,11 +289,40 @@ public class JasonProcessor extends AbstractProcessor {
 		}
 	}
 
+	/**
+	 * Add a <code>MustSupportClientChallenge</code> or 
+	 * <code>MustSupportServerChallenge</code> to a Policy
+	 * @param policy Policy to add to
+	 * @param challengeType Either "MustSupportClientChallenge" or "MustSupportServerChallenge"
+	 */
+	private void mustSupportChallenge(Node policy, Document wsdlDocument, String challengeType) {
+		policy.appendChild(
+			wsdlDocument.createElement(
+				Constants.WS_SECURITY_POLICY_PREFIX + ":Trust10"
+			)
+		).appendChild(
+			wsdlDocument.createElement(
+				Constants.WS_POLICY_PREFIX + ":Policy"
+			)
+		).appendChild(
+			wsdlDocument.createElement(
+				Constants.WS_SECURITY_POLICY_PREFIX + ":" + challengeType
+			)
+		);
+	}
+
 	private void processFresh(Element element, Node policy, Document wsdlDocument) {
 		for (Check check : element.getAnnotation(Fresh.class).check())
 			switch (check) {
 				case SEQUENCE_NUMBER:
 					messager.printMessage(Kind.MANDATORY_WARNING, "@Fresh(SEQUENCE_NUMBER)" + NOT_YET_IMPLEMENTED, element);
+					switch (element.asType().getKind()) {
+						case EXECUTABLE:
+							mustSupportChallenge(policy, wsdlDocument, "MustSupportClientChallenge");
+							break;
+						default:
+							mustSupportChallenge(policy, wsdlDocument, "MustSupportServerChallenge");
+					}
 					break;
 				case TIMESTAMP:
 					policy.appendChild(
