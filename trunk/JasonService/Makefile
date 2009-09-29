@@ -55,7 +55,7 @@ build/classes/Service/Service.wsdl: \
   build/classes/Service/ServiceService.wsdl \
   build/classes/Service/jason/test/server/Service.wsp \
   ../JasonCompiler/dist/JasonCompiler.jar
-	java -jar ../JasonCompiler/dist/JasonCompiler.jar build/classes/Service/{ServiceService.wsdl,jason/test/server/Service.wsp} $@
+	java -jar ../JasonCompiler/dist/JasonCompiler.jar build/classes/Service/ServiceService.wsdl build/classes/Service/jason/test/server/Service.wsp $@
 
 build/classes/Startup/jason.policy: src/StartupSource/jason.policy
 	cp $< build/classes/Startup
