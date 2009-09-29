@@ -18,10 +18,14 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.SOAPPart;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.apache.ws.security.WSConstants;
@@ -34,6 +38,7 @@ import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecSignature;
 import org.apache.ws.security.message.WSSecTimestamp;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
@@ -68,6 +73,7 @@ public class JasonHandler implements SOAPHandler<SOAPMessageContext> {
 	private final WSSecurityEngine wsSecurityEngine;
 	private Crypto crypto;
 	private Document wsdl;
+	private Node policy;
 	private final XPath xpath;
 	private KeyStore keyStore;
 	
@@ -76,8 +82,13 @@ public class JasonHandler implements SOAPHandler<SOAPMessageContext> {
 		xpath = XPathFactory.newInstance().newXPath();
 		try {
 			DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-			documentFactory.setNamespaceAware(true);
+			//TODO: make namespace aware
+//			documentFactory.setNamespaceAware(true);
 			wsdl = documentFactory.newDocumentBuilder().parse(serviceEntry.getWsdl());
+			//When nothing else specified use the default policy (the one without @Policy)
+			policy = (Node) xpath.evaluate("/definitions/binding/Policy/ExactlyOne/All", wsdl, XPathConstants.NODE);
+		} catch (XPathExpressionException ex) {
+			logger.log(Level.SEVERE, null, ex);
 		} catch (SAXException ex) {
 			logger.log(Level.SEVERE, null, ex);
 		} catch (IOException ex) {
@@ -166,26 +177,30 @@ public class JasonHandler implements SOAPHandler<SOAPMessageContext> {
 //				Node securityPolicy = (Node) xpath.evaluate("", wsdl.getDocumentElement(), XPathConstants.NODE);
 				
 				//timestamp
-				WSSecTimestamp secTimestamp = new WSSecTimestamp();
-				secTimestamp.prepare(soapEnvelope);
-				secTimestamp.prependToHeader(secHeader);
+				if (timestampRequested()) {
+					WSSecTimestamp secTimestamp = new WSSecTimestamp();
+					secTimestamp.prepare(soapEnvelope);
+					secTimestamp.prependToHeader(secHeader);
+				}
 
 				//signature
-				WSSecSignature secSignature = new WSSecSignature();
-				//TODO: Make "service" more generic
-				//String alias = xpath.evaluate(expression, wsdl);
-				String query = "substring-after(/definitions/binding[concat(\"tns:\",@name)=/definitions/service/port[address/@location=\"http://localhost:8080/Service/ServiceService\"]/@binding]/@type,\"tns:\")";
-				String alias = xpath.evaluate(query, wsdl.getDocumentElement()).toLowerCase();
-				secSignature.setUserInfo(alias, serviceEntry.getKeyPassword());
-				secSignature.setKeyIdentifierType(WSConstants.ISSUER_SERIAL);
-				secSignature.prepare(soapEnvelope, crypto, secHeader);
-				Vector<WSEncryptionPart> parts = new Vector<WSEncryptionPart>();
-				WSEncryptionPart encP = new WSEncryptionPart("Body", WSConstants.URI_SOAP11_ENV, "Element");
-				parts.add(encP);
-				secSignature.addReferencesToSign(parts, secHeader);
-				secSignature.prependToHeader(secHeader);
-				secSignature.prependBSTElementToHeader(secHeader);
-				secSignature.computeSignature();
+				if (signatureRequested()) {
+					WSSecSignature secSignature = new WSSecSignature();
+					//TODO: Make "service" more generic
+					//String alias = xpath.evaluate(expression, wsdl);
+					String query = "substring-after(/definitions/binding[concat(\"tns:\",@name)=/definitions/service/port[address/@location=\"http://localhost:8080/Service/ServiceService\"]/@binding]/@type,\"tns:\")";
+					String alias = xpath.evaluate(query, wsdl.getDocumentElement()).toLowerCase();
+					secSignature.setUserInfo(alias, serviceEntry.getKeyPassword());
+					secSignature.setKeyIdentifierType(WSConstants.ISSUER_SERIAL);
+					secSignature.prepare(soapEnvelope, crypto, secHeader);
+					Vector<WSEncryptionPart> parts = new Vector<WSEncryptionPart>();
+					WSEncryptionPart encP = new WSEncryptionPart("Body", WSConstants.URI_SOAP11_ENV, "Element");
+					parts.add(encP);
+					secSignature.addReferencesToSign(parts, secHeader);
+					secSignature.prependToHeader(secHeader);
+					secSignature.prependBSTElementToHeader(secHeader);
+					secSignature.computeSignature();
+				}
 			} else { //inbound
 				Vector wsSecurityEngineResults = wsSecurityEngine.processSecurityHeader(context.getMessage().getSOAPPart(), "MyActor", null, crypto);
 				if (wsSecurityEngineResults == null)
@@ -201,5 +216,23 @@ public class JasonHandler implements SOAPHandler<SOAPMessageContext> {
 			logger.log(Level.SEVERE, null, ex);
 		}
 		return true;
+	}
+
+	protected boolean signatureRequested() {
+		logger.info("Signing is not yet implemented");
+		return false;
+	}
+
+	protected boolean timestampRequested() {
+		boolean result;
+		try {
+			if (policy == null)
+				logger.log(Level.SEVERE, "policy == null");
+			result = (Boolean) xpath.evaluate("IncludeTimestamp", policy, XPathConstants.BOOLEAN);
+		} catch (XPathExpressionException ex) {
+			logger.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+			result = false;
+		}
+		return result;
 	}
 }
