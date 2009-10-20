@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jws.WebMethod;
+import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 
@@ -21,14 +22,14 @@ import javax.xml.ws.Endpoint;
  * However this behaviour may change in future versions.
  * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
  */
-@WebService
+@WebService(targetNamespace=Constants.JASON_NAMESPACE)
 @Roles({Constants.SERVICE_PROVIDER_ROLE})
-public final class AdministrativeService {
+public class AdministrativeService {
 	private static final Logger logger = Logger.getLogger(AdministrativeService.class.getName());
 	private static final AdministrativeService instance = new AdministrativeService();
 	private final Set<ServiceEntry> serviceEntries;
 	
-	private AdministrativeService() {
+	public AdministrativeService() {
 		serviceEntries = new HashSet<ServiceEntry>();
 	}
 	
@@ -44,7 +45,7 @@ public final class AdministrativeService {
 	 */
 	@WebMethod
 	@AccessibleTo(Constants.SERVICE_PROVIDER_ROLE)
-	public void add(final ServiceEntry serviceEntry) {
+	public void add(@WebParam(name="serviceEntry") final ServiceEntry serviceEntry) {
 		try {
 			AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
 				@Override
@@ -69,7 +70,7 @@ public final class AdministrativeService {
 				}
 			});
 
-			logger.log(Level.INFO, "Service endpoint published on " + serviceEntry.getEndpointAddress());
+			logger.info("Service endpoint published on " + serviceEntry.getEndpointAddress());
 		} catch (PrivilegedActionException ex) {
 			logger.log(Level.SEVERE, null, ex);
 		}
@@ -81,7 +82,7 @@ public final class AdministrativeService {
 	 */
 	@WebMethod
 	@AccessibleTo(Constants.SERVICE_PROVIDER_ROLE)
-	public void remove(final ServiceEntry serviceEntry) {
+	public void remove(@WebParam(name="serviceEntry") final ServiceEntry serviceEntry) {
 		serviceEntries.remove(serviceEntry);
 		AccessController.doPrivileged(new PrivilegedAction<Void>() {
 			@Override
@@ -90,7 +91,7 @@ public final class AdministrativeService {
 				return null;
 			}
 		});
-		logger.log(Level.INFO, serviceEntry.getEndpointAddress() + " is unpublished");
+		logger.info(serviceEntry.getEndpointAddress() + " is unpublished");
 	}
 	
 	/**
@@ -105,5 +106,16 @@ public final class AdministrativeService {
 	protected void finalize() throws Throwable {
 		close();
 		super.finalize();
+	}
+
+	public static void main(String[] args) {
+		if (args.length == 1) {
+			if (args[0].equals("start")) {
+				Endpoint.create(AdministrativeService.getInstance()).publish("http://localhost:8484/Framework/AdministrativeService");
+				logger.info("AdministrativeService is published on http://localhost:8484/Framework/AdministrativeService");
+			} else if (args[0].equals("stop")) {
+				//TODO: stop the service
+			}
+		}
 	}
 }

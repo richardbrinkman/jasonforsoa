@@ -16,14 +16,26 @@ dist/JasonService.jar: \
   build/classes/Service/Service.wsdl
 	jar cf $@ -C build/classes/Service jason
 
-build/classes/Startup/%.class: src/StartupSource/%.java ../JasonFramework/dist/JasonFramework.jar
+build/classes/Startup/%.class: \
+  src/StartupSource/%.java \
+  build/classes/Startup/jason/test/server/AdministrativeServiceService.class \
+  build/classes/Startup/jason/test/server/ServiceEntry.class \
+  ../JasonFramework/dist/JasonFramework.jar
 	javac -cp build/classes/Startup:$(LIBRARY.CLASSPATH) -d build/classes/Startup -sourcepath src/StartupSource $<
 
 build/classes/Service/%.class: src/ServiceSource/%.java ../JasonFramework/dist/JasonFramework.jar ../JasonCompiler/dist/JasonCompiler.jar
 	javac -cp build/classes/Service:$(LIBRARY.CLASSPATH):../JasonCompiler/dist/JasonCompiler.jar -processor jason.compiler.JasonProcessor -d build/classes/Service -sourcepath src/ServiceSource $<
 
+build/classes/Startup/jason/test/server/AdministrativeServiceService.class \
+build/classes/Startup/jason/test/server/ServiceEntry.class: \
+  ../JasonFramework/build/classes/AdministrativeService.wsdl
+	wsimport -keep -d build/classes/Startup -p jason.test.server $<
+
 run: dist/JasonStartup.jar dist/JasonService.jar ../JasonFramework/dist/JasonFramework.jar
 	java -cp dist/JasonStartup.jar:$(LIBRARY.CLASSPATH) jason.test.server.Startup
+
+runremote: dist/JasonStartup.jar dist/JasonService.jar ../JasonFramework/dist/JasonFramework.jar
+	java -cp dist/JasonStartup.jar:$(LIBRARY.CLASSPATH) jason.test.server.Startup remote
 
 runsandbox: dist/JasonStartup.jar dist/JasonService.jar ../JasonFramework/dist/JasonFramework.jar build/classes/Startup/jason.policy
 	java -cp dist/JasonStartup.jar:$(LIBRARY.CLASSPATH) -Djava.security.manager -Djava.security.policy=build/classes/Startup/jason.policy jason.test.server.Startup

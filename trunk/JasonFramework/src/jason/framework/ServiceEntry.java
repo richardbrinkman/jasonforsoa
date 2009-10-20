@@ -7,6 +7,11 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.ws.Endpoint;
 
 /**
@@ -15,27 +20,34 @@ import javax.xml.ws.Endpoint;
  * all the Services.  
  * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
  */
+@XmlRootElement(name="serviceEntry", namespace=Constants.JASON_NAMESPACE)
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ServiceEntry {
-	private final Object service;
-	private final String keystorePath;
-	private final String keystorePassword;
-	private final String keyPassword;
-	private final String wsdl;
-	private final String className;
-	private final URL[] classPath;
-	private final String endpointAddress;
-	private Endpoint endpoint;
-	private final boolean logging;
-	private final boolean usingClassloader;
+	private Object service;
 	
-    /**
-     * This constructor is used by the client.
-     * @param keystorePath
-     * @param keystorePassword
-     * @param keyPassword
-     * @param wsdl
-     * @param logging
-     */
+	@XmlElement private String keystorePath;
+	@XmlElement	private String keystorePassword;
+	@XmlElement private String keyPassword;
+	@XmlElement private String wsdl;
+	@XmlElement private String className;
+	@XmlElement private URL[] classPath;
+	@XmlElement private String endpointAddress;
+	@XmlTransient	private Endpoint endpoint;
+	@XmlElement private boolean logging;
+	@XmlElement private boolean usingClassloader;
+
+	public ServiceEntry() {
+
+	}
+
+	/**
+	 * This constructor is used by the client.
+	 * @param keystorePath
+	 * @param keystorePassword
+	 * @param keyPassword
+	 * @param wsdl
+	 * @param logging
+	 */
 	public ServiceEntry(String keystorePath, String keystorePassword, String keyPassword, String wsdl, boolean logging) {
 		this.service = null;
 		this.keystorePath = keystorePath;
