@@ -1,4 +1,4 @@
-.PHONY: all clean force
+.PHONY: all clean
 
 all: dist/JasonCompiler.jar
 
@@ -7,11 +7,9 @@ dist/JasonCompiler.jar: \
   build/classes/jason/compiler/Merge.class
 	jar cfe $@ jason.compiler.Merge -C build/classes jason
 
-build/classes/%.class: src/%.java ../JasonFramework/dist/JasonFramework.jar
+build/classes/%.class: src/%.java 
+	@$(MAKE) --no-print-directory -C ../JasonFramework $*
 	javac -cp build/classes:../JasonFramework/dist/JasonFramework.jar -d build/classes $<
-
-../JasonFramework/%: force
-	@make --no-print-directory -C ../JasonFramework $*
 
 clean:
 	rm -rf build/classes/* dist/*

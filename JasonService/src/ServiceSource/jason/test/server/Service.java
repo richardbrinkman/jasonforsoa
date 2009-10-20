@@ -8,6 +8,7 @@ import jason.annotation.Policies;
 import jason.annotation.Policy;
 import jason.annotation.Roles;
 import jason.annotation.ServiceRoles;
+import jason.framework.Constants;
 import javax.jws.WebParam;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
@@ -15,7 +16,7 @@ import javax.jws.WebService;
 @AvailablePolicies({"OldVersion", "NewVersion"})
 @Roles("caller")
 @ServiceRoles("service")
-@WebService(targetNamespace = "http://cs.ru.nl/jason/ns")
+@WebService(targetNamespace = Constants.JASON_NAMESPACE)
 public class Service {
 	/** 
 	 * Greets a user. In Version1 the <code>name</code> parameter should not be

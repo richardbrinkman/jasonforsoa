@@ -23,6 +23,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
+import javax.jws.WebParam;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -222,10 +223,13 @@ public class JasonProcessor extends AbstractProcessor {
 			case METHOD:
 				result = element.getSimpleName().toString() + "Response/return";
 				break;
-			case PARAMETER: 
+			case PARAMETER:
+				WebParam webParam = element.getAnnotation(WebParam.class);
+				if (webParam == null)
+					messager.printMessage(Kind.ERROR, "Parameter " + element.getSimpleName() + " should have an @WebParam(name=...) annotation", element);
 				result = element.getEnclosingElement().getSimpleName().toString() + //method name
 								 "/" +
-								 element.getSimpleName().toString();
+								 (webParam==null ? element.getSimpleName().toString() : webParam.name());
 				break;
 			default:
 				result = null;
