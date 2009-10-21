@@ -1,7 +1,7 @@
 package jason.framework;
 
 import javax.xml.namespace.QName;
-import org.apache.ws.security.WSConstants;
+//import org.apache.ws.security.WSConstants;
 
 /**
  * This interface contains some constants, like namespaces, which are used in other
@@ -30,7 +30,8 @@ public final class Constants {
 	public static final String SIGNATURE_ELEMENT_NAME = "Signature";
 
 	public static final QName SIGNATURE_ELEMENT_QNAME = new QName(XML_SIGNATURE_NAMESPACE, SIGNATURE_ELEMENT_NAME, XML_SIGNATURE_PREFIX);
-	public static final QName WSSE_SECURITY_ELEMENT_QNAME = new QName(WSConstants.WSSE_PREFIX, WSConstants.WSSE_NS);
+//	public static final QName WSSE_SECURITY_ELEMENT_QNAME = new
+//	QName(WSConstants.WSSE_PREFIX, WSConstants.WSSE_NS);
     
   public static final String SERVICE_PROVIDER_ROLE = "ServiceProvider";
     
