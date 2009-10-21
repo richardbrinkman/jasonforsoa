@@ -142,7 +142,7 @@ public class JasonHandler implements SOAPHandler<SOAPMessageContext> {
 	@Override 
 	public Set<QName> getHeaders() {
 		HashSet<QName> set = new HashSet<QName>();
-		set.add(Constants.WSSE_SECURITY_ELEMENT_QNAME);
+		set.add(new QName(WSConstants.WSSE_PREFIX, WSConstants.WSSE_NS));
 		return set;
 	}
 

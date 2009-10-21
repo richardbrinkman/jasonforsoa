@@ -14,11 +14,11 @@ dist/JasonFramework.jar: \
 	jar cfe $@ jason.framework.AdministrativeService -C build/classes jason -C build/classes AdministrativeService.wsdl
 	jarsigner -keystore $< -storepass storepass -keypass keypass $@ JasonFramework
 
-build/classes/%.class: src/%.java
-	javac -cp build/classes:lib/wss4j-1.5.4.jar -d build/classes -sourcepath src $<
+build/classes/%.class: src/%.java ../JasonAnnotations/dist/JasonAnnotations.jar
+	javac -cp build/classes:lib/wss4j-1.5.4.jar:../JasonAnnotations/dist/JasonAnnotations.jar -d build/classes -sourcepath src $<
 
-build/classes/%.wsp: src/%.java ../JasonCompiler/dist/JasonCompiler.jar
-	javac -cp build/classes:lib/wss4j-1.5.4.jar:../JasonCompiler/dist/JasonCompiler.jar -d build/classes -processor jason.compiler.JasonProcessor -sourcepath src $<
+build/classes/%.wsp: src/%.java ../JasonAnnotations/dist/JasonAnnotations.jar ../JasonCompiler/dist/JasonCompiler.jar
+	javac -cp build/classes:lib/wss4j-1.5.4.jar:../JasonAnnotations/dist/JasonAnnotations.jar:../JasonCompiler/dist/JasonCompiler.jar -d build/classes -processor jason.compiler.JasonProcessor -sourcepath src $<
 
 build/classes/AdministrativeServiceService.wsdl:\
   build/classes/jason/framework/AdministrativeService.class
@@ -44,6 +44,9 @@ keys/PrivateKeyStore.jks:
 	$(MAKE) -C ../JasonCompiler $*
 
 force: ;
+
+../JasonAnnotations/%: force
+	$(MAKE) -C ../JasonAnnotations $*
 
 clean:
 	rm -rf build/classes/* dist/*
