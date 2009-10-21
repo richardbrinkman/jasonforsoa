@@ -1,6 +1,9 @@
-.PHONY: client compiler framework service runclient runclientsandbox runservice runservicesandbox test javadoc clean
+.PHONY: annotations client compiler framework service runclient runclientsandbox runservice runservicesandbox test javadoc clean
 
-all: client compiler framework service javadoc
+all: annotations client compiler framework service javadoc
+
+annotations:
+	$(MAKE) -C JasonAnnotations
 
 client:
 	$(MAKE) -C JasonClient
@@ -35,6 +38,7 @@ javadoc:
 	$(MAKE) -C javadoc
 
 clean:
+	$(MAKE) -C JasonAnnotations clean
 	$(MAKE) -C JasonClient clean
 	$(MAKE) -C JasonCompiler clean
 	$(MAKE) -C JasonFramework clean
