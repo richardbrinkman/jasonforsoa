@@ -1,4 +1,5 @@
 SOURCES=$(wildcard\
+  ../JasonAnnotations/src/*/*/*.java\
   ../JasonClient/src/*/*/*/*.java\
   ../JasonCompiler/src/*/*/*.java\
   ../JasonService/src/ServiceSource/*/*/*.java\
