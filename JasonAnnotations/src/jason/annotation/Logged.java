@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * All accesses to methods that are annotated with the <code>@Logged</code> 
  * annotation will appear in the log files.
  * 
- * @author R. Brinkman <r.brinkman@cs.ru.nl>
+ * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
  */
 @Documented
 @Target({ElementType.METHOD})

@@ -20,7 +20,7 @@ import java.net.URLClassLoader;
  * Please ensure that the services cannot be found on the classpath, since only
  * classes that cannot be loaded by the parent ClassLoader, will be loaded by 
  * the <code>JasonClassLoader</code>.
- * @author Richard Brinkman <r.brinkman@cs.ru.nl>
+ * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
  */
 public class JasonClassLoader extends URLClassLoader {
 	public JasonClassLoader(URL[] serviceClassPath) {

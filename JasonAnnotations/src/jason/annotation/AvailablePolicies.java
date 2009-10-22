@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * </code></pre>
  * When annotations are used without the {@link Policy} annotation then that 
  * annotations holds in all the policy versions.
- * @author R. Brinkman <r.brinkman@cs.ru.nl>
+ * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
  */
 @Documented
 @Target(ElementType.TYPE)

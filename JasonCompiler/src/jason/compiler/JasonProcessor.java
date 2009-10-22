@@ -53,7 +53,7 @@ import org.w3c.dom.Node;
  *	<code>javac -processor jason.compiler.JasonProcessor -cp ... &lt;source_files&gt;</code>
  * </pre>
  * Then the <code>JasonProcessor</code> will read all the Jason annotation from
- * the {@link jason.annotation} package and generate the policy files from them.
+ * the <code>jason.annotation</code> package and generate the policy files from them.
  * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
  */
 @SupportedAnnotationTypes({"jason.annotation.*"})
