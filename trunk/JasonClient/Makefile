@@ -11,11 +11,12 @@ dist/JasonClient.jar: \
   build/classes/jason/test/client/Service.class \
   build/classes/jason/test/client/ServiceService.class \
   build/classes/jason/test/client/SayHello.class \
-  build/classes/jason/test/client/SayHelloResponse.class \
-  dist
+  build/classes/jason/test/client/SayHelloResponse.class
+	@mkdir -p dist
 	jar cfe dist/JasonClient.jar jason.test.client.Client -C build/classes jason
 
-build/classes/%.class: src/%.java ../JasonFramework/dist/JasonFramework.jar build/classes
+build/classes/%.class: src/%.java ../JasonFramework/dist/JasonFramework.jar
+	@mkdir -p build/classes
 	javac -cp build/classes:$(LIBRARY.CLASSPATH) -d build/classes $<
 
 run: dist/JasonClient.jar ../JasonFramework/dist/JasonFramework.jar
@@ -28,9 +29,6 @@ runsandbox: dist/JasonClient.jar ../JasonFramework/dist/JasonFramework.jar build
 keys:
 	$(MAKE) -C keys
 
-build/classes:
-	mkdir -p $@
-
 clean:
 	rm -rf build
 
@@ -41,13 +39,15 @@ build/classes/jason/test/client/Service.class \
 build/classes/jason/test/client/ServiceService.class \
 build/classes/jason/test/client/SayHello.class \
 build/classes/jason/test/client/SayHelloResponse.class: \
-  ../JasonService/build/classes/Service/Service.wsdl build/classes
+  ../JasonService/build/classes/Service/Service.wsdl 
+	@mkdir -p build/classes
 	wsimport -d build/classes -p jason.test.client $<
 
 ../JasonService/%: force
 	@$(MAKE) -C ../JasonService $*
 
-build/classes/jason.policy: src/jason.policy build/classes
+build/classes/jason.policy: src/jason.policy
+	@mkdir -p build/classes
 	cp $< build/classes
 
 #dependencies:

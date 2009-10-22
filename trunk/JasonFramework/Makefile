@@ -10,19 +10,20 @@ all: dist/JasonFramework.jar
 dist/JasonFramework.jar: \
   keys/PrivateKeyStore.jks \
 	$(CLASSES) \
-  build/classes/AdministrativeService.wsdl \
-  dist
+  build/classes/AdministrativeService.wsdl
+	@mkdir -p dist
 	jar cfe $@ jason.framework.AdministrativeService -C build/classes jason -C build/classes AdministrativeService.wsdl
 	jarsigner -keystore $< -storepass storepass -keypass keypass $@ JasonFramework
 
-build/classes/%.class: src/%.java ../JasonAnnotations/dist/JasonAnnotations.jar build/classes
+build/classes/%.class: src/%.java ../JasonAnnotations/dist/JasonAnnotations.jar
+	@mkdir -p build/classes
 	javac -cp build/classes:lib/wss4j-1.5.4.jar:../JasonAnnotations/dist/JasonAnnotations.jar -d build/classes -sourcepath src $<
 
 build/classes/%.wsp: \
   src/%.java \
   ../JasonAnnotations/dist/JasonAnnotations.jar \
-  ../JasonCompiler/dist/JasonCompiler.jar \
-  build/classes
+  ../JasonCompiler/dist/JasonCompiler.jar
+	@mkdir -p build/classes
 	javac -cp build/classes:lib/wss4j-1.5.4.jar:../JasonAnnotations/dist/JasonAnnotations.jar:../JasonCompiler/dist/JasonCompiler.jar -d build/classes -processor jason.compiler.JasonProcessor -sourcepath src $<
 
 build/classes/AdministrativeServiceService.wsdl:\
@@ -50,11 +51,8 @@ keys/PrivateKeyStore.jks:
 
 force: ;
 
-build/classes dist:
-	mkdir -p $@
-
 ../JasonAnnotations/%: force
 	@$(MAKE) -C ../JasonAnnotations $*
 
 clean:
-	rm -rf build/classes/* dist/*
+	rm -rf build dist
