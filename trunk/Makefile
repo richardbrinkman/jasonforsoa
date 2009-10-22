@@ -3,44 +3,43 @@
 all: annotations client compiler framework service javadoc
 
 annotations:
-	$(MAKE) -C JasonAnnotations
+	@$(MAKE) -C JasonAnnotations
 
 client:
-	$(MAKE) -C JasonClient
+	@$(MAKE) -C JasonClient
 
 compiler:
-	$(MAKE) -C JasonCompiler
+	@$(MAKE) -C JasonCompiler
 
 framework:
-	$(MAKE) -C JasonFramework
+	@$(MAKE) -C JasonFramework
 
 service:
-	$(MAKE) -C JasonService
-
+	@$(MAKE) -C JasonService
 
 runservice:
-	$(MAKE) -C JasonService run
+	@$(MAKE) -C JasonService run
 
 runclient:
-	$(MAKE) -C JasonClient run
+	@$(MAKE) -C JasonClient run
 
 runclientsandbox:
-	$(MAKE) -C JasonClient runsandbox
+	@$(MAKE) -C JasonClient runsandbox
 
 
 runservicesandbox:
-	$(MAKE) -C JasonService runsandbox
+	@$(MAKE) -C JasonService runsandbox
 
 test:
-	$(MAKE) -C JasonService test
+	@$(MAKE) -C JasonService test
 
 javadoc:
-	$(MAKE) -C javadoc
+	@$(MAKE) -C javadoc
 
 clean:
-	$(MAKE) -C JasonAnnotations clean
-	$(MAKE) -C JasonClient clean
-	$(MAKE) -C JasonCompiler clean
-	$(MAKE) -C JasonFramework clean
-	$(MAKE) -C JasonService clean
-	$(MAKE) -C javadoc clean
+	@$(MAKE) -C JasonAnnotations clean
+	@$(MAKE) -C JasonClient clean
+	@$(MAKE) -C JasonCompiler clean
+	@$(MAKE) -C JasonFramework clean
+	@$(MAKE) -C JasonService clean
+	@$(MAKE) -C javadoc clean

@@ -5,7 +5,8 @@ LIBRARY.CLASSPATH=../JasonAnnotations/dist/JasonAnnotations.jar:../JasonFramewor
 all: dist/JasonStartup.jar dist/JasonService.jar 
 
 dist/JasonStartup.jar: \
-  build/classes/Startup/jason/test/server/Startup.class
+  build/classes/Startup/jason/test/server/Startup.class \
+  dist
 	jar cfe $@ jason.test.server.Startup -C build/classes/Startup jason
 
 dist/JasonService.jar: \
@@ -13,7 +14,8 @@ dist/JasonService.jar: \
   build/classes/Service/jason/test/server/jaxws/SayHello.class \
   build/classes/Service/jason/test/server/jaxws/SayHelloResponse.class \
   build/classes/Service/ServiceService.wsdl \
-  build/classes/Service/Service.wsdl
+  build/classes/Service/Service.wsdl \
+  dist
 	jar cf $@ -C build/classes/Service jason
 
 build/classes/Startup/%.class: \
@@ -28,7 +30,8 @@ build/classes/Service/%.class: \
   src/ServiceSource/%.java \
   ../JasonAnnotations/dist/JasonAnnotations.jar \
   ../JasonFramework/dist/JasonFramework.jar \
-  ../JasonCompiler/dist/JasonCompiler.jar
+  ../JasonCompiler/dist/JasonCompiler.jar \
+  build/classes/Service
 	javac -cp build/classes/Service:$(LIBRARY.CLASSPATH):../JasonCompiler/dist/JasonCompiler.jar -processor jason.compiler.JasonProcessor -d build/classes/Service -sourcepath src/ServiceSource $<
 
 build/classes/Startup/jason/test/server/AdministrativeServiceService.class \
@@ -68,6 +71,7 @@ test: \
 
 build/test/classes/%.class: \
   test/%.java \
+  build/test/classes \
   ../JasonAnnotatations/dist/JasonAnnotations.jar \
   ../JasonFramework/dist/JasonFramework.jar
 	javac -d build/test/classes -cp /usr/share/java/junit4.jar:$(LIBRARY.CLASSPATH) $<
@@ -75,8 +79,11 @@ build/test/classes/%.class: \
 keys:
 	$(MAKE) -C keys
 
+build/% dist:
+	mkdir -p $@
+
 clean:
-	rm -rf build/classes/Service/* build/classes/Startup/* build/test/classes/* dist/*.jar
+	rm -rf build dist
 
 build/classes/Service/ServiceService.wsdl \
 build/classes/Service/jason/test/server/jaxws/SayHello.class \
@@ -97,10 +104,10 @@ build/classes/Startup/jason.policy: src/StartupSource/jason.policy
 force: ;
 
 ../JasonAnnotations/%: force
-	$(MAKE) -C ../JasonAnnotations $*
+	@$(MAKE) -C ../JasonAnnotations $*
 
 ../JasonCompiler/%: force
-	$(MAKE) -C ../JasonCompiler $*
+	@$(MAKE) -C ../JasonCompiler $*
 
 ../JasonFramework/%: force
-	$(MAKE) -C ../JasonFramework $*
+	@$(MAKE) -C ../JasonFramework $*

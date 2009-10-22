@@ -12,10 +12,10 @@ CLASSES=$(MAIN_CLASSES) $(TEST_CLASSES)
 
 all: $(MAIN_CLASSES)
 
-build/classes/%.class: src/%.java
+build/classes/%.class: src/%.java build/classes
 	javac -d build/classes -sourcepath src -cp $(CLASSPATH) $<
 
-build/test/classes/%.class: test/%.java
+build/test/classes/%.class: test/%.java build/test/classes
 	javac -d build/test/classes -sourcepath test -cp $(TEST_CLASSPATH) $<
 
 build/classes/BankService.wsdl: build/classes/bank/Bank.class
@@ -43,6 +43,9 @@ runclient: build/classes/client/Client.class
 
 test: $(TEST_CLASSES)
 	java -cp $(TEST_CLASSPATH) org.junit.runner.JUnitCore $(TESTS)
-	
+
+build/%:
+	mkdir -p $@
+
 clean:
 	rm -rf build/classes/*
