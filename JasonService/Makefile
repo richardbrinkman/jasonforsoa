@@ -5,8 +5,8 @@ LIBRARY.CLASSPATH=../JasonAnnotations/dist/JasonAnnotations.jar:../JasonFramewor
 all: dist/JasonStartup.jar dist/JasonService.jar 
 
 dist/JasonStartup.jar: \
-  build/classes/Startup/jason/test/server/Startup.class \
-  dist
+  build/classes/Startup/jason/test/server/Startup.class
+	@mkdir -p dist
 	jar cfe $@ jason.test.server.Startup -C build/classes/Startup jason
 
 dist/JasonService.jar: \
@@ -14,8 +14,8 @@ dist/JasonService.jar: \
   build/classes/Service/jason/test/server/jaxws/SayHello.class \
   build/classes/Service/jason/test/server/jaxws/SayHelloResponse.class \
   build/classes/Service/ServiceService.wsdl \
-  build/classes/Service/Service.wsdl \
-  dist
+  build/classes/Service/Service.wsdl
+	@mkdir -p dist
 	jar cf $@ -C build/classes/Service jason
 
 build/classes/Startup/%.class: \
@@ -30,13 +30,14 @@ build/classes/Service/%.class: \
   src/ServiceSource/%.java \
   ../JasonAnnotations/dist/JasonAnnotations.jar \
   ../JasonFramework/dist/JasonFramework.jar \
-  ../JasonCompiler/dist/JasonCompiler.jar \
-  build/classes/Service
+  ../JasonCompiler/dist/JasonCompiler.jar
+	@mkdir -p build/classes/Service
 	javac -cp build/classes/Service:$(LIBRARY.CLASSPATH):../JasonCompiler/dist/JasonCompiler.jar -processor jason.compiler.JasonProcessor -d build/classes/Service -sourcepath src/ServiceSource $<
 
 build/classes/Startup/jason/test/server/AdministrativeServiceService.class \
 build/classes/Startup/jason/test/server/ServiceEntry.class: \
   ../JasonFramework/build/classes/AdministrativeService.wsdl
+	@mkdir -p build/classes/Startup
 	wsimport -keep -d build/classes/Startup -p jason.test.server $<
 
 run: \
@@ -71,16 +72,13 @@ test: \
 
 build/test/classes/%.class: \
   test/%.java \
-  build/test/classes \
   ../JasonAnnotatations/dist/JasonAnnotations.jar \
   ../JasonFramework/dist/JasonFramework.jar
+	@mkdir -p build/test/classes
 	javac -d build/test/classes -cp /usr/share/java/junit4.jar:$(LIBRARY.CLASSPATH) $<
 
 keys:
 	$(MAKE) -C keys
-
-build/% dist:
-	mkdir -p $@
 
 clean:
 	rm -rf build dist
