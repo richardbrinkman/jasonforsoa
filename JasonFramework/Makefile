@@ -10,14 +10,19 @@ all: dist/JasonFramework.jar
 dist/JasonFramework.jar: \
   keys/PrivateKeyStore.jks \
 	$(CLASSES) \
-  build/classes/AdministrativeService.wsdl
+  build/classes/AdministrativeService.wsdl \
+  dist
 	jar cfe $@ jason.framework.AdministrativeService -C build/classes jason -C build/classes AdministrativeService.wsdl
 	jarsigner -keystore $< -storepass storepass -keypass keypass $@ JasonFramework
 
-build/classes/%.class: src/%.java ../JasonAnnotations/dist/JasonAnnotations.jar
+build/classes/%.class: src/%.java ../JasonAnnotations/dist/JasonAnnotations.jar build/classes
 	javac -cp build/classes:lib/wss4j-1.5.4.jar:../JasonAnnotations/dist/JasonAnnotations.jar -d build/classes -sourcepath src $<
 
-build/classes/%.wsp: src/%.java ../JasonAnnotations/dist/JasonAnnotations.jar ../JasonCompiler/dist/JasonCompiler.jar
+build/classes/%.wsp: \
+  src/%.java \
+  ../JasonAnnotations/dist/JasonAnnotations.jar \
+  ../JasonCompiler/dist/JasonCompiler.jar \
+  build/classes
 	javac -cp build/classes:lib/wss4j-1.5.4.jar:../JasonAnnotations/dist/JasonAnnotations.jar:../JasonCompiler/dist/JasonCompiler.jar -d build/classes -processor jason.compiler.JasonProcessor -sourcepath src $<
 
 build/classes/AdministrativeServiceService.wsdl:\
@@ -38,15 +43,18 @@ stop: dist/JasonFramework.jar
 	java -cp $(LIBRARY.CLASSPATH) jason.framework.AdministrativeService stop
 
 keys/PrivateKeyStore.jks:
-	$(MAKE) -C keys PrivateKeyStore.jks
+	@$(MAKE) -C keys PrivateKeyStore.jks
 
 ../JasonCompiler/%: force
-	$(MAKE) -C ../JasonCompiler $*
+	@$(MAKE) -C ../JasonCompiler $*
 
 force: ;
 
+build/classes dist:
+	mkdir -p $@
+
 ../JasonAnnotations/%: force
-	$(MAKE) -C ../JasonAnnotations $*
+	@$(MAKE) -C ../JasonAnnotations $*
 
 clean:
 	rm -rf build/classes/* dist/*

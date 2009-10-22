@@ -11,11 +11,8 @@ dist/JasonAnnotations.jar: $(CLASSES) dist
 build/classes/%.class: src/%.java build/classes
 	javac -cp build/classes -d build/classes -sourcepath src $<
 
-dist:
-	-mkdir dist
-
-build/classes:
-	-mkdir -p build/classes
+build/classes dist:
+	-mkdir -p $@
 
 clean:
 	rm -rf build dist
