@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
  * Container annotation to list all the possible <code>@Policy</code> 
  * annotations.
  * 
- * @author R. Brinkman <r.brinkman@cs.ru.nl>
+ * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE)

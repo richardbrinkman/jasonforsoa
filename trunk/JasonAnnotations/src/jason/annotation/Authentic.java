@@ -6,6 +6,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Specifies that a parameter or method result should be signed.
+ * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
+ */
 @Documented
 @Target({ElementType.CONSTRUCTOR,
          ElementType.FIELD,

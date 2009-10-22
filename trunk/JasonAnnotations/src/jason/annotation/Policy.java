@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
  *   }
  * </code></pre>
  * 
- * @author R. Brinkman <r.brinkman@cs.ru.nl>
+ * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
  */
 @Documented
 @Target({ElementType.CONSTRUCTOR,

@@ -25,7 +25,7 @@ import org.w3c.dom.Node;
  * encrypted/signed messages. You can even add the sequence of 
  * <code>LogHandler</code> - <code>JasonHandler</code> - <code>LogHandler</code>
  * to see both the plain and the encrypted/signed messages.
- * @author brinkman
+ * @author dr. ir. R. Brinkman <r.brinkman@cs.ru.nl>
  */
 public class LogHandler implements SOAPHandler<SOAPMessageContext> {
 	private final static Logger logger = Logger.getLogger(LogHandler.class.getName());
