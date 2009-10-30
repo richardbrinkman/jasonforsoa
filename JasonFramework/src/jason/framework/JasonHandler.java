@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivilegedAction;
 import java.security.cert.CertificateException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
@@ -202,7 +203,7 @@ public class JasonHandler implements SOAPHandler<SOAPMessageContext> {
 					secSignature.computeSignature();
 				}
 			} else { //inbound
-				Vector wsSecurityEngineResults = wsSecurityEngine.processSecurityHeader(context.getMessage().getSOAPPart(), "MyActor", null, crypto);
+				List wsSecurityEngineResults = wsSecurityEngine.processSecurityHeader(context.getMessage().getSOAPPart(), "MyActor", null, crypto);
 				if (wsSecurityEngineResults == null)
 					logger.log(Level.INFO, "wsSecurityEngine does not have a validation result");
 //				for (WSSecurityEngineResult result : wsSecurityEngineResults) 

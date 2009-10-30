@@ -23,7 +23,7 @@ run: dist/JasonClient.jar ../JasonFramework/dist/JasonFramework.jar
 	java -cp build/classes:$(LIBRARY.CLASSPATH) jason.test.client.Client
 
 runsandbox: dist/JasonClient.jar ../JasonFramework/dist/JasonFramework.jar build/classes/jason.policy
-	java -cp dist/JasonClient.jar:../JasonFramework/dist/JasonFramework.jar:../JasonFramework/lib/commons-logging-1.0.4.jar:../JasonFramework/lib/opensaml-1.0.1.jar:../JasonFramework/lib/wss4j-1.5.4.jar:../JasonFramework/lib/xmlsec-1.4.0.jar -Djava.security.manager -Djava.security.policy=build/classes/jason.policy jason.test.client.Client
+	java -cp dist/JasonClient.jar:$(LIBRARY.CLASSPATH) -Djava.security.manager -Djava.security.policy=build/classes/jason.policy jason.test.client.Client
 #	cd build/classes; java -cp .:../../../JasonFramework/dist/JasonFramework.jar:../../../JasonFramework/lib/commons-logging-1.0.4.jar:../../../JasonFramework/lib/opensaml-1.0.1.jar:../../../JasonFramework/lib/wss4j-1.5.4.jar:../../../JasonFramework/lib/xmlsec-1.4.0.jar -Djava.security.manager -Djava.security.policy=jason.policy jason.test.client.Client; cd ../../
 
 keys:
